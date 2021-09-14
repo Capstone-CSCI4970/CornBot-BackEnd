@@ -1,0 +1,18 @@
+Installation Instructions for Django:
+
+# Setup Virtual Environment
+    pip install virtualenv => To install virtual environment
+    virtualenv venv => Create virtual Enveronement called venv
+    venv\Scripts\activate.ps1 => Activate it
+    (deactivate => To deactivate it)*
+
+# Install Django
+    pip install django
+
+# Create Project
+    django-admin startproject CornBot
+
+# Start Django Application
+    cd CornBot
+    python manage.py runserver
+
