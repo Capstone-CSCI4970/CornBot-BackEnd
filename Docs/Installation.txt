@@ -20,3 +20,5 @@ Installation Instructions for Django:
     python manage.py startapp train_cornbot  
 
 
+
+
