@@ -16,5 +16,7 @@ Installation Instructions for Django:
     cd CornBot
     python manage.py runserver
 
-#
+# Start App
+    python manage.py startapp train_cornbot  
+
 
