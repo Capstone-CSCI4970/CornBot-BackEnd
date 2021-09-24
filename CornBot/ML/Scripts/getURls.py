@@ -22,6 +22,12 @@ def get_filenames_urls_labels():
     file_urls = []
     for filename in filenames:
         file_urls.append(os.path.join(image_src,filename))#Src + filename is fileUrl
-    return filenames,file_urls,labels
+    return zip(filenames,file_urls,labels)
 
-
+#How to Use it
+count = 0
+for i in get_filenames_urls_labels():
+    count += 1
+    print(i,'\n')
+    if count >= 5:
+        break
