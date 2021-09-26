@@ -4,8 +4,13 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.parsers import JSONParser
 
-from .serializers import TutorialSerializer
+from .serializers import TutorialSerializer, UserSerializer
 from .models import Tutorial
+
+from django.contrib.auth.models import User
+from rest_framework import viewsets
+from rest_framework import permissions
+
 
 # Create your views here.
 from rest_framework.decorators import api_view
@@ -19,10 +24,10 @@ def tutorial_list(request):
         title = request.query_params.get('title', None)
         if title is not None:
             tutorials = tutorials.filter(title__icontains=title)
-        
+
         tutorials_serializer = TutorialSerializer(tutorials, many=True)
         return JsonResponse(tutorials_serializer.data, safe=False)
-        #safe=False for objects serialization
+        # safe=False for objects serialization
     elif request.method == 'POST':
         tutorial_data = JSONParser().parse(request)
         tutorials_serializer = TutorialSerializer(data=tutorial_data)
@@ -40,15 +45,15 @@ def tutorial_detail(request, pk):
     try:
         tutorial = Tutorial.objects.get(pk=pk)
     except Tutorial.DoesNotExist:
-        return JsonResponse({'message': 'The tutorial does not exist'}, status = status.HTTP_404_NOT_FOUND)
+        return JsonResponse({'message': 'The tutorial does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         tutorial_serializer = TutorialSerializer(tutorial)
         return JsonResponse(tutorial_serializer.data)
-    
+
     elif request.method == 'PUT':
         tutorial_data = JSONParser().parse(request)
-        tutorial_serializer = TutorialSerializer(tutorial, data= tutorial_data)
+        tutorial_serializer = TutorialSerializer(tutorial, data=tutorial_data)
         if tutorial_serializer.is_valid():
             tutorial_serializer.save()
             return JsonResponse(tutorial_serializer.data)
@@ -66,3 +71,15 @@ def tutorial_list_published(request):
     if request.method == 'GET':
         tutorial_serializer = TutorialSerializer(tutorials, many=True)
         return JsonResponse(tutorial_serializer.data, safe=False)
+
+
+######## USER BASED VIEW #########
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
+    # permission_classes = [permissions.IsAuthenticated] Sets the permissions on who can edit users
+
