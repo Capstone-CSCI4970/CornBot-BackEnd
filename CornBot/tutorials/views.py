@@ -1,6 +1,4 @@
-from datetime import date
 from django.http import JsonResponse
-from django.shortcuts import render
 from rest_framework import status
 from rest_framework.parsers import JSONParser
 
@@ -9,14 +7,17 @@ from .models import Tutorial
 
 from django.contrib.auth.models import User
 from rest_framework import viewsets
-from rest_framework import permissions
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 
 # Create your views here.
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 
 
 @api_view(['GET', 'POST', 'DELETE'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def tutorial_list(request):
     # Get list of tutorials, post a new tutorial, delete all tutorials
     if request.method == 'GET':
@@ -40,6 +41,8 @@ def tutorial_list(request):
         return JsonResponse({'message': '{} tutorials were deleted'.format(count[0])}, status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def tutorial_detail(request, pk):
     # find the tutorial by pk
     try:
@@ -81,5 +84,6 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
-    # permission_classes = [permissions.IsAuthenticated] Sets the permissions on who can edit users
+    permission_classes = [IsAuthenticated,]
+    authentication_classes = (TokenAuthentication,)
 
