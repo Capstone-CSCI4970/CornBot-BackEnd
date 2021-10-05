@@ -80,9 +80,9 @@ db_pwd = os.environ.get('capstone_db_pwd')
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'db_name',
+        'NAME': '',
         'USER': 'root',
-        'PASSWORD': 'db_pwd',
+        'PASSWORD': '',
         'HOST': 'localhost', 
         'PORT': '3306',
     }
