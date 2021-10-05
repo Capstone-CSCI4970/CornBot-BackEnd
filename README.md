@@ -15,3 +15,9 @@ Step to get up an running:
     python manage.py runserver 8000
   You are all up and running!
   
+
+  Release Notes:
+    1.0.0
+        User has the ability to register themselves in the system.
+        User can be logged in and authenticated in the system.
+        Basic Tutorial end-points to test authentication feature.
