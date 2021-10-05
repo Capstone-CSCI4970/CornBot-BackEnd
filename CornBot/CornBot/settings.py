@@ -74,12 +74,15 @@ WSGI_APPLICATION = 'CornBot.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+db_name = os.environ.get('capstone_db_name')
+db_pwd = os.environ.get('capstone_db_pwd')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
-        'NAME': '',
-        'USER': '',
-        'PASSWORD': '',
+        'NAME': 'db_name',
+        'USER': 'root',
+        'PASSWORD': 'db_pwd',
         'HOST': 'localhost', 
         'PORT': '3306',
     }
