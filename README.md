@@ -5,7 +5,7 @@ Requirements:
 
 # Step to get up an running:
   1. Create a python virtual enviroment and name it venv
-  2.  pip install -r requirements.txt  -- the file is under
+  2. `pip install -r requirements.txt`  -- the file is under
   3. CornBot-BackEnd/requirement.txt
   4. create tables and migrations
     python manage.py makemigrations
