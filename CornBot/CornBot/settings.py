@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'tutorials.apps.TutorialsConfig',
     'corsheaders',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    'train_cornbot.apps.TrainCornbotConfig',
+
 ]
 
 MIDDLEWARE = [
@@ -85,9 +87,9 @@ WSGI_APPLICATION = 'CornBot.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
-        'NAME': '<databasename>',
+        'NAME': '',
         'USER': 'root',
-        'PASSWORD': '<pwd>',
+        'PASSWORD': '',
         'HOST': 'localhost', 
         'PORT': '3306',
         }
