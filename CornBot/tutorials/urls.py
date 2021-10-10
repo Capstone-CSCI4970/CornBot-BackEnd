@@ -9,7 +9,6 @@ router.register(r'users', views.UserViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),
-    url(r'^auth/', ObtainAuthToken.as_view()),
     url(r'^tutorials$', views.tutorial_list),
     url(r'^tutorials/(?P<pk>[0-9]+)$', views.tutorial_detail),
     url(r'^tutorials/published$', views.tutorial_list_published)
