@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.parsers import JSONParser
 
-from .serializers import TutorialSerializer, UserSerializer
+from .serializers import TutorialSerializer
 from .models import Tutorial
 
 from django.contrib.auth.models import User
@@ -76,12 +76,4 @@ def tutorial_list_published(request):
         return JsonResponse(tutorial_serializer.data, safe=False)
 
 
-######## USER BASED VIEW #########
-
-class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
 

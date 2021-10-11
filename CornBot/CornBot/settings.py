@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'tutorials.apps.TutorialsConfig',
     'corsheaders',
     'rest_framework.authtoken',
-    'train_cornbot.apps.TrainCornbotConfig',
+    # 'train_cornbot.apps.TrainCornbotConfig',
     'API.apps.ApiConfig'
 
 ]
