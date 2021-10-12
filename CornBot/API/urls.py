@@ -12,6 +12,8 @@ urlpatterns=[
     url(r'^auth/', ObtainAuthToken.as_view()),
     url(r'^images', views.image_list),
     url(r'^tester', views.test_choices),
-    url(r'test/(?P<pk>[0-9]+)$', views.test_specific_choices),
-    url(r'blag/(?P<pk>[0-9]+)$', views.get_user_choices_by_imageId)
+    url(r'choice/(?P<pk>[0-9]+)$', views.test_specific_choices),
+    url(r'user/choice/(?P<pk>[0-9]+)$', views.get_user_choices_by_imageId),
+    url(r'^choice/create', views.create_choice_record),
+    url(r'^choice/(?P<pk>[0-9]+)$', views.update_user_choice)
 ]

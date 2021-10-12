@@ -6,22 +6,27 @@ class ImageTable(models.Model):
     imageUrl = models.CharField(db_column='imageUrl', unique=True, max_length=512)
     label = models.BooleanField(null=False)
     is_trainSet = models.BooleanField(default=True)
-    users = models.ManyToManyField(settings.AUTH_USER_MODEL, through='Choices', related_name= 'choices_made')
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL, through='Choice', related_name= 'choices_made')
 
     class Meta:
         managed = True
-        db_table = 'image_table'
+        db_table = 'image_table' 
 
-class Choices(models.Model):
-    users = models.ForeignKey(
+    def __str__(self) -> str:
+        return f'id: {self.pk}\n fileName: {self.fileName}\n imageUrl: {self.imageUrl}'
+
+class Choice(models.Model):
+    user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         null= True
         )
-    images = models.ForeignKey(
+    image = models.ForeignKey(
         ImageTable,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         null=True
     )
     userLabel = models.BooleanField()
-    confidence = models.DecimalField(default=0.00, max_digits=5, decimal_places=2)
+
+    def __str__(self) -> str:
+        return f'ChoiceId: {self.pk} \n User: {self.user}\n Image: {self.image}\n Label: {self.userLabel}'

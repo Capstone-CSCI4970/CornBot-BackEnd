@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import ImageTable, Choices
+from .models import ImageTable, Choice
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
+
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'password']
@@ -14,7 +15,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         return user
 
 class ImageSerializer(serializers.HyperlinkedModelSerializer):
-    # users = UserSerializer(many = True)
     class Meta:
         model = ImageTable
         fields = (
@@ -23,14 +23,23 @@ class ImageSerializer(serializers.HyperlinkedModelSerializer):
             'label',
         )
 class ChoiceSerializer(serializers.ModelSerializer):
-    users = UserSerializer()
-    images = ImageSerializer()
+
     class Meta:
-        model = Choices
+        model = Choice
         fields = (
             'id',
-            'users',
-            'images',
+            'user',
+            'image',
             'userLabel'
         )
-    depth = 1
+    def create(self, validated_data):
+        # get the associated user and image
+        user = validated_data.pop('user')
+        image = validated_data.pop('image')
+        choice_object = Choice.objects.create(user=user, image=image, userLabel = validated_data.pop('userLabel'))
+        return choice_object
+
+    def update(self, instance, validated_data):
+        instance.userLabel = validated_data.get('userLabel', instance.userLabel)
+        instance.save()
+        return instance     

@@ -31,10 +31,10 @@ def tutorial_list(request):
         # safe=False for objects serialization
     elif request.method == 'POST':
         tutorial_data = JSONParser().parse(request)
-        tutorials_serializer = TutorialSerializer(data=tutorial_data)
+        tutorials_serializer = TutorialSerializer(data=tutorial_data, many = True)
         if tutorials_serializer.is_valid():
             tutorials_serializer.save()
-            return JsonResponse(tutorials_serializer.data, status=status.HTTP_201_CREATED)
+            return JsonResponse(tutorials_serializer.data, status=status.HTTP_201_CREATED, safe=False)
         return JsonResponse(tutorials_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'DELETE':
         count = Tutorial.objects.all().delete()

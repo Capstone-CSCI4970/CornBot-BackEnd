@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.parsers import JSONParser
 
 from .serializers import ChoiceSerializer, UserSerializer, ImageSerializer
-from .models import ImageTable, Choices
+from .models import ImageTable, Choice
 from django.contrib.auth.models import User
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
@@ -29,7 +29,7 @@ def image_list(request):
 
 @api_view(['GET'])
 def test_choices(request):
-    choices = Choices.objects.all()
+    choices = Choice.objects.all()
     if request.method == 'GET':
         choice_seralizer = ChoiceSerializer(choices, many = True)
         return JsonResponse(choice_seralizer.data, safe=False)
@@ -37,7 +37,7 @@ def test_choices(request):
 @api_view(['GET'])
 def test_specific_choices(request, pk):
     user = User.objects.get(pk=pk)
-    choices = Choices.objects.filter(users=user)
+    choices = Choice.objects.filter(user=user)
 
     serialized_data = ChoiceSerializer(choices, many=True)
     return JsonResponse(serialized_data.data, safe=False)
@@ -45,7 +45,33 @@ def test_specific_choices(request, pk):
 @api_view(['GET'])
 def get_user_choices_by_imageId(request, pk):
     images = ImageTable.objects.get(pk=pk)
-    choices = Choices.objects.filter(images=images)
+    choices = Choice.objects.filter(image=images)
 
     data = ChoiceSerializer(choices, many = True)
     return JsonResponse(data.data, safe=False)
+
+@api_view(['POST'])
+def create_choice_record(request):
+    choice_data = JSONParser().parse(request)
+    choices_serializer = ChoiceSerializer(data=choice_data)
+    if choices_serializer.is_valid():
+        choices_serializer.save()
+        return JsonResponse(choices_serializer.data, status=status.HTTP_201_CREATED, safe=False)
+    else:
+        return JsonResponse(choices_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT'])
+def update_user_choice(request, pk):
+    try:
+        current_choice = Choice.objects.get(pk=pk)
+    except Choice.DoesNotExist:
+        return JsonResponse({'message': 'That choice does not exist'}, status=status.HTTP_404_NOT_FOUND)
+    
+    print(f'this is the current choice grabbed: {current_choice}')
+    choice_data = JSONParser().parse(request)
+    choice_seralizer = ChoiceSerializer(current_choice, data=choice_data)
+    if choice_seralizer.is_valid():
+        choice_seralizer.save()
+        return JsonResponse(choice_seralizer.data)
+    else:
+        return JsonResponse(choice_seralizer.errors, status=status.HTTP_400_BAD_REQUEST)
