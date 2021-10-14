@@ -27,6 +27,7 @@ class Choice(models.Model):
         null=True
     )
     userLabel = models.BooleanField()
+    create_date = models.DateField(auto_now_add=True)
 
     def __str__(self) -> str:
         return f'ChoiceId: {self.pk} \n User: {self.user}\n Image: {self.image}\n Label: {self.userLabel}'
