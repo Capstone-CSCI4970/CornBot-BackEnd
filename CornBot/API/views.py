@@ -9,8 +9,28 @@ from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
+
+
+import pandas as pd
+import random
 # Create your views here.
 
+#Result Reproducibility
+random.seed(7)
+# Create your views here.
+@api_view(['GET'])
+def get_images(request):
+    if request.method == 'GET':
+        #Reset
+        #ImageTable.objects.all().update(is_train=0)
+        images = ImageTable.objects.filter(is_trainSet=True)
+        x = 10
+        get_x_images_random = random.sample(list(images), x) 
+        image_to_train = [it.pk for it in get_x_images_random]
+        images = ImageTable.objects.filter(id__in=image_to_train)
+        images.update(is_trainSet=False)
+        all_healthy_serializer = ImageSerializer(images, many=True)
+        return JsonResponse(all_healthy_serializer.data, safe=False)
 ######## USER BASED VIEW #########
 
 class UserViewSet(viewsets.ModelViewSet):
