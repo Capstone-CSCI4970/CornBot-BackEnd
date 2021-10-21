@@ -21,5 +21,4 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^tutorialApi/', include('tutorials.urls')),
     url(r'^api/', include('API.urls')),
-    url(r'^', include('train_cornbot.urls'))
 ]

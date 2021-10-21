@@ -8,12 +8,12 @@ class ImageTable(models.Model):
     is_trainSet = models.BooleanField(default=True)
     users = models.ManyToManyField(settings.AUTH_USER_MODEL, through='Choice', related_name= 'choices_made')
 
+    def __str__(self) -> str:
+        return f'id: {self.pk}\n fileName: {self.fileName}\n imageUrl: {self.imageUrl}'
+
     class Meta:
         managed = True
         db_table = 'image_table' 
-
-    def __str__(self) -> str:
-        return f'id: {self.pk}\n fileName: {self.fileName}\n imageUrl: {self.imageUrl}'
 
 class Choice(models.Model):
     user = models.ForeignKey(
@@ -31,3 +31,7 @@ class Choice(models.Model):
 
     def __str__(self) -> str:
         return f'ChoiceId: {self.pk} \n User: {self.user}\n Image: {self.image}\n Label: {self.userLabel}'
+
+    class Meta:
+        managed = True
+        db_table = 'choice' 
