@@ -64,7 +64,7 @@ def get_acc(request,pk):
     train_images = [x.fileName for x in images]#User Train Images
     pred = retrive_prediction(train_images,train_labels)
     accuracy_train = accuracy(train_labels,pred)
-    data = {'user_id':pk,'Accuracy':accuracy_train}
+    data = {'user_id':pk,'Accuracy':accuracy_train,'images':imageid_choices}
     return JsonResponse(data, safe=False)
     
 
