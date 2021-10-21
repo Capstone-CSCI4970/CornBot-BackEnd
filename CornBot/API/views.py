@@ -10,7 +10,11 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
 
+from ML.ML_Class import ML_Model
+from sklearn.ensemble import RandomForestClassifier
+from ML.DataPreprocessing import DataPreprocessing
 
+import numpy as np
 import pandas as pd
 import random
 # Create your views here.
@@ -20,17 +24,51 @@ random.seed(7)
 # Create your views here.
 @api_view(['GET'])
 def get_images(request):
-    if request.method == 'GET':
-        #Reset
-        #ImageTable.objects.all().update(is_train=0)
-        images = ImageTable.objects.filter(is_trainSet=True)
-        x = 10
-        get_x_images_random = random.sample(list(images), x) 
-        image_to_train = [it.pk for it in get_x_images_random]
-        images = ImageTable.objects.filter(id__in=image_to_train)
-        images.update(is_trainSet=False)
-        all_healthy_serializer = ImageSerializer(images, many=True)
-        return JsonResponse(all_healthy_serializer.data, safe=False)
+    #Reset
+    #ImageTable.objects.all().update(is_trainSet=True)
+    images = ImageTable.objects.filter(is_trainSet=True)
+    x = 10
+    get_x_images_random = random.sample(list(images), x)#Get 'X' random Images 
+    image_to_train = [it.pk for it in get_x_images_random]
+    images = ImageTable.objects.filter(id__in=image_to_train)
+    images.update(is_trainSet=False)# Is used for training
+    all_healthy_serializer = ImageSerializer(images, many=True)
+    return JsonResponse(all_healthy_serializer.data, safe=False)
+
+
+
+def get_data():
+    path = 's3://cornimagesbucket/csvOut.csv'
+    data = pd.read_csv(path, index_col = 0, header = None)
+    return data
+
+def retrive_prediction(train_img_names,train_img_label):
+    data = get_data()
+    train_set = data.loc[train_img_names, :]
+    train_set['y_value'] = train_img_label
+    ml_model = ML_Model(train_set, RandomForestClassifier(), DataPreprocessing(True))
+    return ml_model.predict_train_image()[0]
+
+def accuracy(x,y):
+    x,y = np.array(x),np.array(y)
+    pred = (x == y).astype(np.int)
+    return pred.mean()*100
+
+@api_view(['GET'])
+def get_acc(request,pk):
+    user = User.objects.get(pk=pk)
+    choices = Choice.objects.filter(user=user)
+    imageid_choices = [choice.image_id for choice in choices]
+    train_labels = [choice.userLabel for choice in choices]#User Train Labels
+    images = ImageTable.objects.filter(pk__in=imageid_choices)
+    train_images = [x.fileName for x in images]#User Train Images
+    pred = retrive_prediction(train_images,train_labels)
+    accuracy_train = accuracy(train_labels,pred)
+    data = {'user_id':pk,'Accuracy':accuracy_train}
+    return JsonResponse(data, safe=False)
+    
+
+
 ######## USER BASED VIEW #########
 
 class UserViewSet(viewsets.ModelViewSet):
