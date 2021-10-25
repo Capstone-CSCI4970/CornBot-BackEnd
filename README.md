@@ -3,7 +3,7 @@
 Requirements:
   python 3.9.1
 
-# Step to get up an running:
+# Steps to get up and running:
   1. Create a python virtual enviroment and name it venv
   2. `pip install -r requirements.txt`  -- the file is under
    CornBot-BackEnd/requirement.txt
@@ -18,7 +18,13 @@ Requirements:
   
 
   # Release Notes:
-    ## 1.0.0
+    ## 1.0.0 Milestone 1
         1. User has the ability to register themselves in the system.
         2. User can be logged in and authenticated in the system.
         3. Basic Tutorial end-points to test authentication feature.
+  
+    ## 1.1.0 Milestone 2
+        1. Database can be populated with images from AWS S3.
+        2. Backend can be used iwth SQLite or MySQL databases. 
+        3. Endpoints for front end to fetch images and post user labels. 
+        4. All necessary models and serializers created. 
