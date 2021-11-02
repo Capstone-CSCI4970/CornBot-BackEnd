@@ -10,9 +10,14 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
 
+
 from ML.ML_Class import ML_Model
+from ML.Viz import make_confusion_matrix
 from sklearn.ensemble import RandomForestClassifier
 from ML.DataPreprocessing import DataPreprocessing
+from sklearn.metrics import confusion_matrix
+import seaborn as sn
+import matplotlib.pyplot as plt
 
 import numpy as np
 import pandas as pd
@@ -63,11 +68,56 @@ def get_acc(request,pk):
     images = ImageTable.objects.filter(pk__in=imageid_choices)
     train_images = [x.fileName for x in images]#User Train Images
     pred = retrive_prediction(train_images,train_labels)
+    # cf_matrix = confusion_matrix(train_labels,pred)
+    # labels = ['True Neg','False Pos','False Neg','True Pos']
+    # categories = ['Healthy', 'Blight']
+    # encoded_img = make_confusion_matrix(cf_matrix, group_names=labels, categories=categories, cmap='binary', title='Prediction CF Matrix',figsize=(12,12))
+    # image_uri = 'data:%s;base64,%s' % ('image/jpeg', encoded_img)
     accuracy_train = accuracy(train_labels,pred)
     data = {'user_id':pk,'Accuracy':accuracy_train,'images':imageid_choices}
+    # data = {'user_id':pk,'Accuracy':accuracy_train,'images':imageid_choices,'image_uri':image_uri}
     return JsonResponse(data, safe=False)
     
 
+def retrive_prediction(train_img_names,train_img_label):
+    data = get_data()
+    train_set = data.loc[train_img_names, :]
+    train_set['y_value'] = train_img_label
+    ml_model = ML_Model(train_set, RandomForestClassifier(), DataPreprocessing(True))
+    return ml_model.predict_train_image()[0]
+
+@api_view(['GET'])
+def getTestAcc(request,pk):
+    user = User.objects.get(pk=pk)
+    
+    choices = Choice.objects.filter(user=user)
+    imageid_choices = [choice.image_id for choice in choices]
+    train_labels = [choice.userLabel for choice in choices]#User Train Labels
+    images_train = ImageTable.objects.filter(pk__in=imageid_choices)
+    train_images = [x.fileName for x in images_train]#User Train Images
+    data = get_data()
+    train_set = data.loc[train_images, :]
+    train_set['y_value'] = train_labels
+    ml_model = ML_Model(train_set, RandomForestClassifier(), DataPreprocessing(True))
+
+    images = ImageTable.objects.filter(is_trainSet=True)
+    imageid_test = [img.id for img in images]
+    test_labels = [x.label for x in images]#User Train Labels
+    test_images = [x.fileName for x in images]#User Test Images
+    test_set = data.loc[test_images, :]
+    pred,prob = ml_model.predict_test_image(test_set)
+    print("###########")
+    print(type(prob),prob)
+    imgid_confid = zip(imageid_test,prob)
+
+    cf_matrix = confusion_matrix(test_labels,pred)
+    labels = ['True Neg','False Pos','False Neg','True Pos']
+    categories = ['Healthy', 'Blight']
+    encoded_img = make_confusion_matrix(cf_matrix, group_names=labels, categories=categories, cmap='binary', title='Prediction CF Matrix',figsize=(12,12))
+    confusion_matrix_uri = 'data:%s;base64,%s' % ('image/jpeg', encoded_img)
+    accuracy_test = accuracy(test_labels,pred)
+    data = {'user_id':pk,'Accuracy':accuracy_test,'image_confidence':list(imgid_confid),'confusion_matrix_uri':confusion_matrix_uri}
+    return JsonResponse(data, safe=False)
 
 ######## USER BASED VIEW #########
 

@@ -54,6 +54,14 @@ class ML_Model:
         y_probabilities = self.ml_model.predict_proba(self.X)#Get probabilites for each label
         y_probabilities = [max(prob) for prob in y_probabilities]#Choose the max probability out of 2 label
         return y_prediction, max(y_probabilities) # Return prediction along with prediction
+    
+    def predict_test_image(self,test_images):      
+        test_images = test_images.iloc[:,: -1].values   
+        test_images = self.preprocess.fit_transform(test_images)
+        y_prediction = self.ml_model.predict(test_images)
+        y_probabilities = self.ml_model.predict_proba(test_images)#Get probabilites for each label
+        y_probabilities = [max(prob) for prob in y_probabilities]#Choose the max probability out of 2 label
+        return y_prediction, y_probabilities # Return prediction along with prediction
         
 
 # class ML_Model:
