@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.parsers import JSONParser
+from rest_framework.utils import json
 
 from .serializers import ChoiceSerializer, UserSerializer, ImageSerializer
 from .models import ImageTable, Choice
@@ -8,7 +9,7 @@ from django.contrib.auth.models import User
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
 from ML.ML_Class import ML_Model
 from sklearn.ensemble import RandomForestClassifier
@@ -133,3 +134,14 @@ def update_user_choice(request, pk):
         return JsonResponse(choice_seralizer.data)
     else:
         return JsonResponse(choice_seralizer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+def get_uid_by_username(request, uname):
+    try:
+        user = User.objects.get(username=uname)
+    except User.DoesNotExist:
+        return JsonResponse({'message': 'That user does not exist'}, status=status.HTTP_404_NOT_FOUND)
+    uid = user.pk
+    return JsonResponse({'username': uname, 'uid': uid})

@@ -10,6 +10,7 @@ router.register(r'users', views.UserViewSet)
 urlpatterns=[
     url(r'^', include(router.urls)),
     url(r'^auth/', ObtainAuthToken.as_view()),
+    url(r'^getuid/(?P<uname>\w+)/$', views.get_uid_by_username),
     url(r'^images', views.image_list),
     url(r'^getimages', views.get_images),
     url(r'^getacc/(?P<pk>[0-9]+)$', views.get_acc),
