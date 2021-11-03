@@ -1,0 +1,38 @@
+Mysql Local Setup:
+
+# Install mysql workbench
+
+# Create a local database
+    user = root
+    passowrd = <Add passowrd>
+
+# Configure Settings
+    # In Settings.py
+    DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql', 
+        'NAME': '<databasename>',
+        'USER': 'root',
+        'PASSWORD': '<pwd>',
+        'HOST': 'localhost', 
+        'PORT': '3306',
+        }
+    }
+
+# Create Model.py
+    python manage.py inspectdb > models.py ( do some editing)
+
+# Make migrations
+    python manage.py makemigrations(Be sure to install mysqlclient)
+    python mange.py migrate
+
+# Make sure app is running and check table in mysql workbench
+
+
+
+
+
+
+
+
+

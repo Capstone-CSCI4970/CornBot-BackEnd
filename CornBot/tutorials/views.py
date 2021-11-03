@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.parsers import JSONParser
 
-from .serializers import TutorialSerializer, UserSerializer
+from .serializers import TutorialSerializer
 from .models import Tutorial
 
 from django.contrib.auth.models import User
@@ -31,10 +31,10 @@ def tutorial_list(request):
         # safe=False for objects serialization
     elif request.method == 'POST':
         tutorial_data = JSONParser().parse(request)
-        tutorials_serializer = TutorialSerializer(data=tutorial_data)
+        tutorials_serializer = TutorialSerializer(data=tutorial_data, many = True)
         if tutorials_serializer.is_valid():
             tutorials_serializer.save()
-            return JsonResponse(tutorials_serializer.data, status=status.HTTP_201_CREATED)
+            return JsonResponse(tutorials_serializer.data, status=status.HTTP_201_CREATED, safe=False)
         return JsonResponse(tutorials_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'DELETE':
         count = Tutorial.objects.all().delete()
@@ -76,12 +76,4 @@ def tutorial_list_published(request):
         return JsonResponse(tutorial_serializer.data, safe=False)
 
 
-######## USER BASED VIEW #########
-
-class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
 
