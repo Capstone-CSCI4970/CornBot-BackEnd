@@ -1,0 +1,327 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Views &#8212; CornBot 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Welcome to CornBot-BackEnd’s documentation!" href="../index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="Welcome to CornBot-BackEnd’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">CornBot 1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Views</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-API.views">
+<span id="views"></span><h1>Views<a class="headerlink" href="#module-API.views" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="API.views.UserViewSet">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">UserViewSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.UserViewSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>API endpoint that allows users to be viewed or edited.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="API.views.UserViewSet.queryset">
+<span class="sig-name descname"><span class="pre">queryset</span></span><a class="headerlink" href="#API.views.UserViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="API.views.UserViewSet.serializer_class">
+<span class="sig-name descname"><span class="pre">serializer_class</span></span><a class="headerlink" href="#API.views.UserViewSet.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">API.serializers.UserSerializer</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="API.views.accuracy">
+<span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">accuracy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.accuracy" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function evaluate the accuracy based on ground truth and prediction.
+It is represented in out of 100(percentages).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>list</em>) – It contains the list of goundtruth</p></li>
+<li><p><strong>y</strong> (<em>list</em>) – It contains the list of prediction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>accuracy</strong> – it returns the accurcy computed using x and y</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="API.views.create_choice_record">
+<span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">create_choice_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.create_choice_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>This end point creates choice record(s) that were made by
+user labeling images to help train the machine learning model.</p>
+<dl class="simple">
+<dt>request: HttpRequest</dt><dd><p>The HttpRequest made by the front-end to this given end point</p>
+</dd>
+</dl>
+<blockquote>
+<div><p>JsonResponse returning the choice records made and http status of 201 Created.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="API.views.getTestAcc">
+<span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">getTestAcc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.getTestAcc" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function takes in a given request and user pk to get the users
+overally accuracy of test set(the images not used for training).It
+computes the accuracy of the model on test set. Also, confidence for
+each images, and some other analytics like confusion matrix that are
+helpful to better judge the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> (<em>HttpRequest</em>) – The HttpRequest object received from the front-end.</p></li>
+<li><p><strong>pk</strong> (<em>int</em>) – The identifier of a specific user to get only the accuracy for that user.</p></li>
+<li><p><strong>data</strong> (<em>JsonResponse</em>) – it returns jsonrespone of data containing user_id, test accuracy, and
+confidence for each images used for test accuracy. It also includes a
+image that shows the confusion matrix and metrices score for the model.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="API.views.get_acc">
+<span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">get_acc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.get_acc" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function takes in a given request and user pk to get the
+users overally accuracy of labeling of the random set of images
+provided by get_images end-point and does this by comparing the
+users labels to the ground truth of the image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> (<em>HttpRequest</em>) – The HttpRequest object received from the front-end.</p></li>
+<li><p><strong>pk</strong> (<em>int</em>) – The identifier of a specific user to get only the accuracy for that user.</p></li>
+<li><p><strong>data</strong> (<em>JsonResponse</em>) – it returns jsonrespone of data containing user_id, accuracy, and
+all the images of user used to compute the accuracy.i.e images used
+for labelling for user</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="API.views.get_data">
+<span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#API.views.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Function uses the s3 bucket path to retrieve csv file containing the
+image names and its featutes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>data</strong> – a csv file containing list of images and its features</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>csv</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="API.views.get_images">
+<span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">get_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.get_images" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function takes in a http GET request from the front-end to grab a random sample of 10 images
+from the image table that are labeled to be training sets for the user(s) to label the given image
+in order to help train the ML model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>HttpRequest</em>) – The incoming HttpRequest object used to determine what request is coming in.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>images</strong> – a json response containing a random list of images that the front-end will use
+to display to the user for labeling to help train the ML model.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>JsonResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="API.views.get_uid_by_username">
+<span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">get_uid_by_username</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.get_uid_by_username" title="Permalink to this definition">¶</a></dt>
+<dd><p>This end point takes a given user_name and finds the correlating user identifer
+so that the front-end can save the identifier in the session to use for later
+information being requested about choices a given user makes.</p>
+<dl class="simple">
+<dt>request: HttpRequest</dt><dd><p>The HttpRequest object sent representing the request being made from the front-end.</p>
+</dd>
+<dt>user_name: str</dt><dd><p>The unique username to help identify the specifc user in the session to help retrieve
+the correlating unique identifier number otherwise know as the primary key.</p>
+</dd>
+</dl>
+<p>JsonResponse with the correlating user_name and the unique identifier for that user.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="API.views.get_user_choices_by_imageId">
+<span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">get_user_choices_by_imageId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.get_user_choices_by_imageId" title="Permalink to this definition">¶</a></dt>
+<dd><p>This endpoint gets a users label on a specific image using
+the unique identifier provided and filters down by the current
+date.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="API.views.get_user_specific_choices">
+<span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">get_user_specific_choices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.get_user_specific_choices" title="Permalink to this definition">¶</a></dt>
+<dd><p>This end-point takes a given request and user pk
+to get the users choices on images that were labeled during the current session.</p>
+<dl class="simple">
+<dt>request: HttpRequest</dt><dd><p>The HttpRequest that was made to the end point.</p>
+</dd>
+<dt>pk: int</dt><dd><p>The unique identifer for a given user.</p>
+</dd>
+</dl>
+<p>JsonResponse with the set of choices a user has made.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="API.views.image_list">
+<span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">image_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.image_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO: filter these images to be only ones used on trainset = True
+This is a simple API end-point that will return a list of all
+images to be displayed by the front-end
+:param request: The HttpRequest object recieved in the GET request
+:type request: HttpRequest</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>A JsonResponse with a list of all images for the front-end to display.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="API.views.retrive_prediction">
+<span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">retrive_prediction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_img_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_img_label</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.retrive_prediction" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function instantiates the ml_model class and retreives prediction
+of labels for train images</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>train_img_names</strong> (<em>list</em>) – It contains the list of image names being used for training</p></li>
+<li><p><strong>train_img_label</strong> (<em>list</em>) – It contains the list of user assigned label for each image for training</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>pred</strong> – Prediction of image label for each image stored in a list</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="API.views.test_choices">
+<span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">test_choices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.test_choices" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="API.views.update_user_choice">
+<span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">update_user_choice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.update_user_choice" title="Permalink to this definition">¶</a></dt>
+<dd><p>This end point updates a given choice record by the pk provided in the request.</p>
+<dl class="simple">
+<dt>request: HttpRequest</dt><dd><p>The HttpRequest mde by the front-end to this given end point</p>
+</dd>
+<dt>pk: int</dt><dd><p>The unique identifier of the choice record being updated.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>JsonResponse that includes the choice record that was updated.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../index.html"
+                        title="previous chapter">Welcome to CornBot-BackEnd’s documentation!</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/modules/views.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="Welcome to CornBot-BackEnd’s documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">CornBot 1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Views</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Bibek.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.2.0.
+    </div>
+  </body>
+</html>

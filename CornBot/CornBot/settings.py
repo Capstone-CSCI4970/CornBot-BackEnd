@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'tutorials.apps.TutorialsConfig',
     'corsheaders',
     'rest_framework.authtoken',
-    'API.apps.ApiConfig'
+    'API.apps.ApiConfig'  
 ]
 
 MIDDLEWARE = [
