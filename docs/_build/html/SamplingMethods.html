@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>SamplingMethods module &#8212; CornBot 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Viz module" href="Viz.html" />
+    <link rel="prev" title="ML_Class module" href="ML_Class.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Viz.html" title="Viz module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="ML_Class.html" title="ML_Class module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">CornBot 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">ML</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">SamplingMethods module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-SamplingMethods">
+<span id="samplingmethods-module"></span><h1>SamplingMethods module<a class="headerlink" href="#module-SamplingMethods" title="Permalink to this headline">¶</a></h1>
+<p>Created on Tue Mar 10 10:48:17 2020</p>
+<p>&#64;author: Donovan</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="SamplingMethods.lowestPercentage">
+<span class="sig-prename descclassname"><span class="pre">SamplingMethods.</span></span><span class="sig-name descname"><span class="pre">lowestPercentage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ml_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SamplingMethods.lowestPercentage" title="Permalink to this definition">¶</a></dt>
+<dd><p>This sampling method finds the pictures with the lowest percent probability in the test set.
+It then removes the n samples with the lowest percent probability from X_test.
+Finaly it returns the new testing set and the sample set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>al_model</strong> (<em>active learning class object</em>) – The active learning model.</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – The number of samples to be returned.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>X_sample</strong> (<em>pandas DataFrame</em>) – The new list of samples to be added to the train set.</p></li>
+<li><p><strong>X_test</strong> (<em>pandas DataFrame</em>) – The new testing set with the samples removed.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="ML_Class.html"
+                        title="previous chapter">ML_Class module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="Viz.html"
+                        title="next chapter">Viz module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/SamplingMethods.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Viz.html" title="Viz module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="ML_Class.html" title="ML_Class module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">CornBot 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >ML</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">SamplingMethods module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Bibek.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.2.0.
+    </div>
+  </body>
+</html>

@@ -1,5 +1,5 @@
-Views
-======
+API Views
+=========
 
 .. automodule:: API.views
    :members:

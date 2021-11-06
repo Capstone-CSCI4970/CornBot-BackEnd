@@ -11,6 +11,8 @@ Welcome to CornBot-BackEnd's documentation!
    :caption: Contents:
 
    modules/views.rst
+   modules/models.rst
+   modules
 
 Indices and tables
 ==================
