@@ -18,15 +18,15 @@ from sklearn.ensemble import RandomForestClassifier
 from ML.DataPreprocessing import DataPreprocessing
 from sklearn.metrics import confusion_matrix
 import seaborn as sn
-import matplotlib.pyplot as plt # is this import needed? not in any requirements.txt file
+import matplotlib.pyplot as plt
 
 import numpy as np
 import pandas as pd
 import random
-# Create your views here.
 
 #Result Reproducibility
 random.seed(7)
+
 # Create your views here.
 @api_view(['GET'])
 def get_images(request):
@@ -60,29 +60,65 @@ def get_images(request):
 
 def get_data():
     """
-    TODO: need to write documentation for this given function.
+        This Function uses the s3 bucket path to retrieve csv file containing the
+        image names and its featutes.
+
+        Returns
+        ----------
+        data: csv
+            a csv file containing list of images and its features
     """
     path = 's3://cornimagesbucket/csvOut.csv'
     data = pd.read_csv(path, index_col = 0, header = None)
     return data
 
+
 def retrive_prediction(train_img_names,train_img_label):
     """
-        TODO: need to write documentation for this given function.
+        This function instantiates the ml_model class and retreives prediction
+        of labels for train images
+
+        Parameters
+        ----------
+        train_img_names : list
+            It contains the list of image names being used for training
+        
+        train_img_label : list
+            It contains the list of user assigned label for each image for training
+        Returns
+        ----------
+        pred: list
+            Prediction of image label for each image stored in a list 
+
     """
     data = get_data()
-    train_set = data.loc[train_img_names, :]
-    train_set['y_value'] = train_img_label
-    ml_model = ML_Model(train_set, RandomForestClassifier(), DataPreprocessing(True))
-    return ml_model.predict_train_image()[0]
+    train_set = data.loc[train_img_names, :]#get all the features of each images
+    train_set['y_value'] = train_img_label#add a label column 
+    ml_model = ML_Model(train_set, RandomForestClassifier(), DataPreprocessing(True))#instantiate the model
+    pred = ml_model.predict_train_image()[0]#get the prediction
+    return pred
 
 def accuracy(x,y):
     """
-        TODO: need to write documentation for this given function
+        This function evaluate the accuracy based on ground truth and prediction. 
+        It is represented in out of 100(percentages).
+
+        Parameters
+        ----------
+        x : list
+            It contains the list of goundtruth
+        
+        y : list
+            It contains the list of prediction
+        Returns
+        ----------
+        accuracy: int
+            it returns the accurcy computed using x and y
     """
     x,y = np.array(x),np.array(y)
     pred = (x == y).astype(np.int)
-    return pred.mean()*100
+    accuracy = pred.mean()*100
+    return accuracy
 
 @api_view(['GET'])
 def get_acc(request,pk):
@@ -98,6 +134,10 @@ def get_acc(request,pk):
             The HttpRequest object received from the front-end.
         pk: int
             The identifier of a specific user to get only the accuracy for that user.
+        data: JsonResponse
+            it returns jsonrespone of data containing user_id, accuracy, and 
+            all the images of user used to compute the accuracy.i.e images used
+            for labelling for user 
     """
     user = User.objects.get(pk=pk)
     choices = Choice.objects.filter(user=user)
@@ -106,31 +146,31 @@ def get_acc(request,pk):
     images = ImageTable.objects.filter(pk__in=imageid_choices)
     train_images = [x.fileName for x in images]#User Train Images
     pred = retrive_prediction(train_images,train_labels)
-    # cf_matrix = confusion_matrix(train_labels,pred)
-    # labels = ['True Neg','False Pos','False Neg','True Pos']
-    # categories = ['Healthy', 'Blight']
-    # encoded_img = make_confusion_matrix(cf_matrix, group_names=labels, categories=categories, cmap='binary', title='Prediction CF Matrix',figsize=(12,12))
-    # image_uri = 'data:%s;base64,%s' % ('image/jpeg', encoded_img)
     accuracy_train = accuracy(train_labels,pred)
     data = {'user_id':pk,'Accuracy':accuracy_train,'images':imageid_choices}
-    # data = {'user_id':pk,'Accuracy':accuracy_train,'images':imageid_choices,'image_uri':image_uri}
     return JsonResponse(data, safe=False)
-    
 
-def retrive_prediction(train_img_names,train_img_label):
-    """
-    TODO: need to write documentation for this given function.
-    """
-    data = get_data()
-    train_set = data.loc[train_img_names, :]
-    train_set['y_value'] = train_img_label
-    ml_model = ML_Model(train_set, RandomForestClassifier(), DataPreprocessing(True))
-    return ml_model.predict_train_image()[0]
+
 
 @api_view(['GET'])
 def getTestAcc(request,pk):
     """
-    TODO: need to write documentation for this given function.
+        This function takes in a given request and user pk to get the users
+        overally accuracy of test set(the images not used for training).It
+        computes the accuracy of the model on test set. Also, confidence for
+        each images, and some other analytics like confusion matrix that are 
+        helpful to better judge the model. 
+
+        Parameters
+        ----------
+        request: HttpRequest
+            The HttpRequest object received from the front-end.
+        pk: int
+            The identifier of a specific user to get only the accuracy for that user.
+        data: JsonResponse
+            it returns jsonrespone of data containing user_id, test accuracy, and 
+            confidence for each images used for test accuracy. It also includes a 
+            image that shows the confusion matrix and metrices score for the model. 
     """
     user = User.objects.get(pk=pk)
     
@@ -150,8 +190,6 @@ def getTestAcc(request,pk):
     test_images = [x.fileName for x in images]#User Test Images
     test_set = data.loc[test_images, :]
     pred,prob = ml_model.predict_test_image(test_set)
-    print("###########")
-    print(type(prob),prob)
     imgid_confid = zip(imageid_test,prob)
 
     cf_matrix = confusion_matrix(test_labels,pred)
