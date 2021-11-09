@@ -15,9 +15,9 @@ urlpatterns=[
     url(r'^getimages', views.get_images),
     url(r'^getacc/(?P<pk>[0-9]+)$', views.get_acc),
     url(r'^getTestAcc/(?P<pk>[0-9]+)$', views.getTestAcc),
-    url(r'^tester', views.test_choices),
     url(r'choice/(?P<pk>[0-9]+)$', views.get_user_specific_choices),
     url(r'user/choice/(?P<pk>[0-9]+)$', views.get_user_choices_by_imageId),
     url(r'^choice/create', views.create_choice_record),
-    url(r'^choice/(?P<pk>[0-9]+)$', views.update_user_choice)
+    url(r'^choice/(?P<pk>[0-9]+)$', views.update_user_choice),
+    url(r'^get_users_leaderboard', views.users_accuracy_leaderboard)
 ]

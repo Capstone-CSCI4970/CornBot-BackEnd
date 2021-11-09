@@ -32,7 +32,7 @@ class ImageTable(models.Model):
     users = models.ManyToManyField(settings.AUTH_USER_MODEL, through='Choice', related_name= 'choices_made')
 
     def __str__(self) -> str:
-        return f'id: {self.pk}\n fileName: {self.fileName}\n imageUrl: {self.imageUrl}'
+        return f'id: {self.pk}\n fileName: {self.fileName}\n imageUrl: {self.imageUrl}, label: {self.label}'
 
     class Meta:
         managed = True
@@ -56,6 +56,9 @@ class Choice(models.Model):
         create_date: DateTime
             The date a given choice record was created.
             Automatically given as the current date and time the record was created.
+        user_training_record: boolean
+            The label to identify a given record as being created during a user training activity.
+            Indication that the record is a not intended for production.
     """
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -69,10 +72,10 @@ class Choice(models.Model):
     )
     userLabel = models.BooleanField()
     create_date = models.DateTimeField(auto_now_add=True)
-    # TODO: add boolean field user_training_record, constraint = not null , front-end provides this
+    user_training_record = models.BooleanField(null=False)
 
     def __str__(self) -> str:
-        return f'ChoiceId: {self.pk} \n User: {self.user}\n Image: {self.image}\n Label: {self.userLabel}'
+        return f'ChoiceId: {self.pk} \n User: {self.user}\n Image: {self.image.fileName}\n Label: {self.userLabel}\n user_training_record: {self.user_training_record}\n'
 
     class Meta:
         managed = True

@@ -115,6 +115,8 @@ def accuracy(x,y):
         accuracy: int
             it returns the accurcy computed using x and y
     """
+    if not x or not y: # if either list is empty, we cannot calculate the accuracy.
+        return 0.00
     x,y = np.array(x),np.array(y)
     pred = (x == y).astype(np.int)
     accuracy = pred.mean()*100
@@ -355,3 +357,17 @@ def get_uid_by_username(request, user_name):
         return JsonResponse({'message': 'That user does not exist'}, status=status.HTTP_404_NOT_FOUND)
     uid = user.pk
     return JsonResponse({'username': user_name, 'uid': uid})
+
+@api_view(['GET'])
+def users_accuracy_leaderboard(request):
+    users = User.objects.all()
+    data = {}
+
+    for user in users:
+        data[user.username] = {}
+        choices = Choice.objects.filter(user=user).order_by('image_id')
+        groundTruths = ImageTable.objects.filter(pk__in = [choice.image_id for choice in choices])
+        user_choices = [choice.userLabel for choice in choices]
+        user_image_truths = [image.label for image in groundTruths]
+        data[user.username] = accuracy(user_choices, user_image_truths)
+    return JsonResponse(data, status=status.HTTP_200_OK)
