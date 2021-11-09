@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>DataPreprocessing module &#8212; CornBot 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ML_Class module" href="ML_Class.html" />
+    <link rel="prev" title="ML" href="modules.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-DataPreprocessing">
+<span id="datapreprocessing-module"></span><h1>DataPreprocessing module<a class="headerlink" href="#module-DataPreprocessing" title="Permalink to this headline">¶</a></h1>
+<p>Created on Sat Feb  8 11:21:32 2020</p>
+<p>&#64;author: Donovan</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="DataPreprocessing.DataPreprocessing">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">DataPreprocessing.</span></span><span class="sig-name descname"><span class="pre">DataPreprocessing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">standard_scaling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pca</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DataPreprocessing.DataPreprocessing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class object prepares the data for classification.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="DataPreprocessing.DataPreprocessing.fit_transform">
+<span class="sig-name descname"><span class="pre">fit_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_train</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DataPreprocessing.DataPreprocessing.fit_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function fits and transforms the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X_train</strong> (<em>pandas DataFrame</em>) – The data to be transformed.</p></li>
+<li><p><strong>Modified</strong> (<em>Attributes</em>) – </p></li>
+<li><p><strong>-------------------</strong> – </p></li>
+<li><p><strong>sc</strong> (<em>standard scaler object</em><em> or </em><em>None</em>) – Used to scale features fitted to the data</p></li>
+<li><p><strong>norm</strong> (<em>Normalizer object</em><em> or </em><em>None</em>) – Used to normalize features fitted to the data</p></li>
+<li><p><strong>pca</strong> (<em>PCA object</em>) – Used to perform principal component analysis on features fitted to the data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>X_train</strong> – The preprocessed data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pandas DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DataPreprocessing.DataPreprocessing.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_test</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DataPreprocessing.DataPreprocessing.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transforms new data before prediction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X_test</strong> (<em>pandas DataFrame</em>) – The data to be transformed.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>X_test</strong> – The preprocessed data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pandas DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">CornBot</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="modules/views.html">API Views</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/models.html">API models</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ML</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">DataPreprocessing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ML_Class.html">ML_Class module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SamplingMethods.html">SamplingMethods module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Viz.html">Viz module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">ML</a><ul>
+      <li>Previous: <a href="modules.html" title="previous chapter">ML</a></li>
+      <li>Next: <a href="ML_Class.html" title="next chapter">ML_Class module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Bibek.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/DataPreprocessing.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
