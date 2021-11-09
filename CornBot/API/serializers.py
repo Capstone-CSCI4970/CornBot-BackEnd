@@ -18,6 +18,7 @@ class ImageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ImageTable
         fields = (
+            'id',
             'fileName',
             'imageUrl',
             'label',
@@ -36,7 +37,8 @@ class ChoiceSerializer(serializers.ModelSerializer):
         # get the associated user and image
         user = validated_data.pop('user')
         image = validated_data.pop('image')
-        choice_object = Choice.objects.create(user=user, image=image, userLabel = validated_data.pop('userLabel'))
+        choice_object = Choice.objects.create(user=user, image=image, userLabel = validated_data.pop('userLabel'),
+             user_training_record =validated_data.pop('user_training_record'))
         return choice_object
 
     def update(self, instance, validated_data):
