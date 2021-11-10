@@ -28,7 +28,7 @@ Requirements:
         2. Backend can be used iwth SQLite or MySQL databases. 
         3. Endpoints for front end to fetch images and post user labels. 
         4. All necessary models and serializers created. 
-    ## 1.2.0 Milestone 2
+    ## 1.2.0 Milestone 3
         1. Choices gained date time field for creation date, boolean for if users choice is for user training or not.
         2. New endpoint to return users accuracies for front-end leaderboard.
         3. Documentation added for views and models.
