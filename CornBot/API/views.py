@@ -23,6 +23,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import random
+import torch
+import cv2
+from PIL import Image
+from io import BytesIO
+import base64
+import matplotlib.pyplot as plt
+from torchvision import transforms
 
 #Result Reproducibility
 random.seed(7)
@@ -115,7 +122,7 @@ def accuracy(x,y):
         accuracy: int
             it returns the accurcy computed using x and y
     """
-    if not x or not y: # if either list is empty, we cannot calculate the accuracy.
+    if not np.array(x).any() or not np.array(y).any(): # if either list is empty, we cannot calculate the accuracy.
         return 0.00
     x,y = np.array(x),np.array(y)
     pred = (x == y).astype(np.int)
@@ -201,6 +208,23 @@ def getTestAcc(request,pk):
     confusion_matrix_uri = 'data:%s;base64,%s' % ('image/jpeg', encoded_img)
     accuracy_test = accuracy(test_labels,pred)
     data = {'user_id':pk,'Accuracy':accuracy_test,'image_confidence':list(imgid_confid),'confusion_matrix_uri':confusion_matrix_uri}
+    return JsonResponse(data, safe=False)
+
+@api_view(['GET'])
+def getUpload(request,pk):
+    file = request.FILES["uploadedFile"]
+    #model = torch.hub.load('ML/yolov5', 'custom', path='ML/yolov5/runs/train/exp/weights/best.pt', source='local')
+    model = torch.hub.load('ultralytics/yolov5', 'custom', path='ML/best.pt')
+    input = Image.open(file)
+    transform = transforms.Compose([transforms.Resize(416)])
+    input = transform(input)
+    results = model(input, size=416)
+    results.imgs # array of original images (as np array) passed to model for inference
+    results.render()  # updates results.imgs with boxes and labels
+    buffered = BytesIO()
+    img_base64 = Image.fromarray(results.imgs[0])
+    img_base64.save(buffered, format="JPEG")
+    data = {"Pred_URI":base64.b64encode(buffered.getvalue()).decode('utf-8')}
     return JsonResponse(data, safe=False)
 
 ######## USER BASED VIEW #########
@@ -369,5 +393,6 @@ def users_accuracy_leaderboard(request):
         groundTruths = ImageTable.objects.filter(pk__in = [choice.image_id for choice in choices])
         user_choices = [choice.userLabel for choice in choices]
         user_image_truths = [image.label for image in groundTruths]
-        data[user.username] = accuracy(user_choices, user_image_truths)
+        
+        data[user.username] = accuracy(user_choices, user_image_truths) #if user_choices != None  else 0
     return JsonResponse(data, status=status.HTTP_200_OK)
