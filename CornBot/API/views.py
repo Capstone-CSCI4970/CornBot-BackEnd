@@ -122,8 +122,8 @@ def accuracy(x,y):
         accuracy: int
             it returns the accurcy computed using x and y
     """
-    # if not x or not y: # if either list is empty, we cannot calculate the accuracy.
-    #     return 0.00
+    if not np.array(x).any() or not np.array(y).any(): # if either list is empty, we cannot calculate the accuracy.
+        return 0.00
     x,y = np.array(x),np.array(y)
     pred = (x == y).astype(np.int)
     accuracy = pred.mean()*100
@@ -213,7 +213,8 @@ def getTestAcc(request,pk):
 @api_view(['GET'])
 def getUpload(request,pk):
     file = request.FILES["uploadedFile"]
-    model = torch.hub.load('ML/yolov5', 'custom', path='ML/yolov5/runs/train/exp/weights/best.pt', source='local')
+    #model = torch.hub.load('ML/yolov5', 'custom', path='ML/yolov5/runs/train/exp/weights/best.pt', source='local')
+    model = torch.hub.load('ultralytics/yolov5', 'custom', path='ML/best.pt')
     input = Image.open(file)
     transform = transforms.Compose([transforms.Resize(416)])
     input = transform(input)
@@ -392,5 +393,6 @@ def users_accuracy_leaderboard(request):
         groundTruths = ImageTable.objects.filter(pk__in = [choice.image_id for choice in choices])
         user_choices = [choice.userLabel for choice in choices]
         user_image_truths = [image.label for image in groundTruths]
-        data[user.username] = accuracy(user_choices, user_image_truths)
+        
+        data[user.username] = accuracy(user_choices, user_image_truths) #if user_choices != None  else 0
     return JsonResponse(data, status=status.HTTP_200_OK)
