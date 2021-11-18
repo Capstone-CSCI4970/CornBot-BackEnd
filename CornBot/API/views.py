@@ -216,9 +216,9 @@ def getUpload(request,pk):
     #model = torch.hub.load('ML/yolov5', 'custom', path='ML/yolov5/runs/train/exp/weights/best.pt', source='local')
     model = torch.hub.load('ultralytics/yolov5', 'custom', path='ML/best.pt')
     input = Image.open(file)
-    transform = transforms.Compose([transforms.Resize(416)])
+    transform = transforms.Compose([transforms.Resize(1056)])
     input = transform(input)
-    results = model(input, size=416)
+    results = model(input, size=1056)
     results.imgs # array of original images (as np array) passed to model for inference
     results.render()  # updates results.imgs with boxes and labels
     buffered = BytesIO()
