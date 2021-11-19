@@ -14,6 +14,7 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 
 from ML.ML_Class import ML_Model
 from ML.Viz import make_confusion_matrix
+from ML.analytics_viz import user_acc_viz,image_misclass_viz
 from sklearn.ensemble import RandomForestClassifier
 from ML.DataPreprocessing import DataPreprocessing
 from sklearn.metrics import confusion_matrix
@@ -227,6 +228,49 @@ def getUpload(request,pk):
     data = {"Pred_URI":base64.b64encode(buffered.getvalue()).decode('utf-8')}
     return JsonResponse(data, safe=False)
 
+def image_missclasfy_analytics():
+    users = User.objects.all()
+    full_image_ids = np.zeros(len(ImageTable.objects.all())+1)
+    for user in users:
+        choices = Choice.objects.filter(user=user)
+        if(len(choices) > 0):
+            imageids = np.array([choice.image_id for choice in choices])
+            user_labels = [choice.userLabel for choice in choices]
+            images = ImageTable.objects.filter(pk__in=imageids)
+            ground_truth = [x.label for x in images]
+            mask = np.array(user_labels) != np.array(ground_truth)
+            unmatched_labels = imageids[mask]
+            full_image_ids[unmatched_labels] += 1
+    
+    id_misclas = np.argpartition(full_image_ids,-5)[-5:] # ids of 5 most misclassified image
+    ids_value = full_image_ids[id_misclas]
+    images_missclass = ImageTable.objects.filter(pk__in=id_misclas)
+    id_to_imagename = [x.fileName for x in images_missclass]
+    viz_encoded = image_misclass_viz(id_to_imagename,ids_value)
+    return viz_encoded
+
+def user_acc_analytics():
+    users = User.objects.all()
+    users_list = []
+    acc_list = []    
+    for user in users:
+        choices = Choice.objects.filter(user=user).order_by('image_id')
+        groundTruths = ImageTable.objects.filter(pk__in = [choice.image_id for choice in choices])
+        user_choices = [choice.userLabel for choice in choices]
+        user_image_truths = [image.label for image in groundTruths]
+        users_list.append(user)
+        acc_list.append(accuracy(user_choices, user_image_truths))
+
+    viz_encoded = user_acc_viz(users_list,acc_list)
+    return viz_encoded
+    
+@api_view(['GET'])
+def getAnalytics(request,pk):
+    viz_user_acc = 'data:%s;base64,%s' % ('image/jpeg', user_acc_analytics())
+    viz_misclass_image = 'data:%s;base64,%s' % ('image/jpeg', image_missclasfy_analytics())
+    data = {'userNacc':viz_user_acc,'imageMissUser':viz_misclass_image}
+    return JsonResponse(data, status=status.HTTP_200_OK)
+    
 ######## USER BASED VIEW #########
 
 class UserViewSet(viewsets.ModelViewSet):
