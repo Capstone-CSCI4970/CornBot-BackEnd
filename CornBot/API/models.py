@@ -25,6 +25,7 @@ class ImageTable(models.Model):
         The many-to-many relationship between images and users.
         Refer to Choices table for more information.
     """
+    id = models.BigAutoField(primary_key=True)
     fileName = models.CharField(db_column='fileName', unique=True, max_length=512)  # unique column, logical PK
     imageUrl = models.CharField(db_column='imageUrl', unique=True, max_length=512)
     label = models.BooleanField(null=False)
@@ -32,7 +33,7 @@ class ImageTable(models.Model):
     users = models.ManyToManyField(settings.AUTH_USER_MODEL, through='Choice', related_name= 'choices_made')
 
     def __str__(self) -> str:
-        return f'id: {self.pk}\n fileName: {self.fileName}\n imageUrl: {self.imageUrl}, label: {self.label}'
+        return f'id: {self.pk}\n fileName: {self.fileName}\n imageUrl: {self.imageUrl}, label: {self.label}, is_trainSet: {self.is_trainSet}'
 
     class Meta:
         managed = True

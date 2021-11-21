@@ -126,4 +126,4 @@ def make_confusion_matrix(cf,
     plt.gcf().savefig(buf, format='png')
     buf.seek(0)
     confusion_matrix = base64.b64encode(buf.read()).decode('ascii')
-    return 
+    return confusion_matrix
