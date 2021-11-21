@@ -20,7 +20,7 @@ urlpatterns=[
     url(r'choice/(?P<pk>[0-9]+)$', views.get_user_specific_choices),
     url(r'user/choice/(?P<pk>[0-9]+)$', views.get_user_choices_by_imageId),
     url(r'^choice/create', views.create_choice_record),
-    url(r'^choice/(?P<pk>[0-9]+)$', views.update_user_choice),
+    url(r'^choice/update/(?P<pk>[0-9]+)$', views.update_user_choice),
     url(r'^get_users_leaderboard', views.users_accuracy_leaderboard),
     url(r'^image/populate', views.image_populate)
 ]
