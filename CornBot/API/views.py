@@ -30,6 +30,7 @@ from io import BytesIO
 import base64
 import matplotlib.pyplot as plt
 from torchvision import transforms
+import os
 
 #Result Reproducibility
 random.seed(7)
@@ -59,9 +60,8 @@ def get_images(request):
     get_x_images_random = random.sample(list(images), x)#Get 'X' random Images 
     image_to_train = [it.pk for it in get_x_images_random]
     images = ImageTable.objects.filter(id__in=image_to_train)
-    images.update(is_trainSet=False)# Is used for training
-    all_healthy_serializer = ImageSerializer(images, many=True)
-    return JsonResponse(all_healthy_serializer.data, safe=False)
+    images_for_user = ImageSerializer(images, many=True)
+    return JsonResponse(images_for_user.data, safe=False)
 
 
 
@@ -396,3 +396,46 @@ def users_accuracy_leaderboard(request):
         
         data[user.username] = accuracy(user_choices, user_image_truths) #if user_choices != None  else 0
     return JsonResponse(data, status=status.HTTP_200_OK)
+
+def get_filenames_urls_labels():
+    """
+        Returns a tuple of lists of filenames,urls and labels in order.
+        Returns
+        -------
+        returnValues : tuple
+            Lists.
+    """
+    path = 's3://cornimagesbucket/csvOut.csv'# Path to the S3 bucket
+    data = pd.read_csv(path, index_col = 0, header = None)#Read the csv
+    data_temp = data.reset_index()#Recover the original index
+    image_src = "cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/"
+    filenames = list(data_temp.iloc[:,0])#Get all the filename
+    labels = list(data.iloc[:,-1].map(dict(B=1, H=0)))#Get corrosponding Labels of the filename
+    file_urls = []
+    for filename in filenames:
+        file_urls.append(os.path.join(image_src,filename))#Src + filename is fileUrl
+    return zip(filenames,file_urls,labels)
+
+# Endpoint to populate image table with 20 or 200 images set for test
+# TODO Either lock down this endpoint or improve solution such that this is not needed.
+@api_view(['GET'])
+def image_populate(request):
+    images = list(get_filenames_urls_labels())
+    healthy_test_images = images[0:10]
+    unhealthy_test_images = images[-10:]
+    images_for_users = images[10:-10]
+    #insert healthy images for model testing
+    saveImage(healthy_test_images, False)
+    #insert unhealth images for model testing
+    saveImage(unhealthy_test_images, False)
+    #insert images for users to label
+    saveImage(images_for_users, True)
+    return JsonResponse({'message': 'Image Table populated'}, status=status.HTTP_200_OK)
+
+# save the given image list with the is_trainSet indicator
+def saveImage(image_list, is_trainSet):
+    for image in image_list:
+        new_entry = ImageTable( fileName=image[0], imageUrl=image[1], label =image[2], is_trainSet=is_trainSet)
+        new_entry.save()
+        
+

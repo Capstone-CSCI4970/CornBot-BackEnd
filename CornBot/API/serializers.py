@@ -31,7 +31,8 @@ class ChoiceSerializer(serializers.ModelSerializer):
             'id',
             'user',
             'image',
-            'userLabel'
+            'userLabel',
+            'user_training_record'
         )
     def create(self, validated_data):
         # get the associated user and image

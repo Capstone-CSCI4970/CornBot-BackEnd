@@ -10,7 +10,7 @@ router.register(r'users', views.UserViewSet)
 urlpatterns=[
     url(r'^', include(router.urls)),
     url(r'^auth/', ObtainAuthToken.as_view()),
-    url(r'^getuid/(?P<uname>\w+)/$', views.get_uid_by_username),
+    url(r'^getuid/(?P<user_name>\w+)/$', views.get_uid_by_username),
     url(r'^images', views.image_list),
     url(r'^getimages', views.get_images),
     url(r'^getacc/(?P<pk>[0-9]+)$', views.get_acc),
@@ -20,5 +20,6 @@ urlpatterns=[
     url(r'user/choice/(?P<pk>[0-9]+)$', views.get_user_choices_by_imageId),
     url(r'^choice/create', views.create_choice_record),
     url(r'^choice/(?P<pk>[0-9]+)$', views.update_user_choice),
-    url(r'^get_users_leaderboard', views.users_accuracy_leaderboard)
+    url(r'^get_users_leaderboard', views.users_accuracy_leaderboard),
+    url(r'^image/populate', views.image_populate)
 ]
