@@ -161,7 +161,19 @@ def get_acc(request,pk):
     return JsonResponse(data, safe=False)
 
 
-
+def initialize_model(user):
+    choices = Choice.objects.filter(user=user)
+    if len(choices) == 0:
+        return None 
+    imageid_choices = [choice.image_id for choice in choices]
+    train_labels = [choice.userLabel for choice in choices]#User Train Labels
+    images_train = ImageTable.objects.filter(pk__in=imageid_choices)
+    train_images = [x.fileName for x in images_train]#User Train Images
+    data = get_data()
+    train_set = data.loc[train_images, :]
+    train_set['y_value'] = train_labels
+    ml_model = ML_Model(train_set, RandomForestClassifier(), DataPreprocessing(True))
+    return ml_model
 @api_view(['GET'])
 def getTestAcc(request,pk):
     """
@@ -184,16 +196,8 @@ def getTestAcc(request,pk):
     """
     user = User.objects.get(pk=pk)
     
-    choices = Choice.objects.filter(user=user)
-    imageid_choices = [choice.image_id for choice in choices]
-    train_labels = [choice.userLabel for choice in choices]#User Train Labels
-    images_train = ImageTable.objects.filter(pk__in=imageid_choices)
-    train_images = [x.fileName for x in images_train]#User Train Images
+    ml_model = initialize_model(user)
     data = get_data()
-    train_set = data.loc[train_images, :]
-    train_set['y_value'] = train_labels
-    ml_model = ML_Model(train_set, RandomForestClassifier(), DataPreprocessing(True))
-
     images = ImageTable.objects.filter(is_trainSet=True)
     imageid_test = [img.id for img in images]
     test_labels = [x.label for x in images]#User Train Labels
@@ -212,7 +216,7 @@ def getTestAcc(request,pk):
     return JsonResponse(data, safe=False)
 
 @api_view(['GET'])
-def getUpload(request,pk):
+def getUpload(request):
     file = request.FILES["uploadedFile"]
     #model = torch.hub.load('ML/yolov5', 'custom', path='ML/yolov5/runs/train/exp/weights/best.pt', source='local')
     model = torch.hub.load('ultralytics/yolov5', 'custom', path='ML/best.pt')
@@ -230,6 +234,7 @@ def getUpload(request,pk):
 
 def image_missclasfy_analytics():
     users = User.objects.all()
+    anlytics_data = {}
     full_image_ids = np.zeros(len(ImageTable.objects.all())+1)
     for user in users:
         choices = Choice.objects.filter(user=user)
@@ -246,30 +251,57 @@ def image_missclasfy_analytics():
     ids_value = full_image_ids[id_misclas]
     images_missclass = ImageTable.objects.filter(pk__in=id_misclas)
     id_to_imagename = [x.fileName for x in images_missclass]
-    viz_encoded = image_misclass_viz(id_to_imagename,ids_value)
-    return viz_encoded
+    for idx,filename in enumerate(id_to_imagename):
+        anlytics_data[filename] = ids_value[idx]
+    return anlytics_data
+    #viz_encoded = image_misclass_viz(id_to_imagename,ids_value)
+    #return viz_encoded
 
 def user_acc_analytics():
     users = User.objects.all()
     users_list = []
-    acc_list = []    
+    acc_list = [] 
+    anlytics_data = {}
     for user in users:
-        choices = Choice.objects.filter(user=user).order_by('image_id')
-        groundTruths = ImageTable.objects.filter(pk__in = [choice.image_id for choice in choices])
-        user_choices = [choice.userLabel for choice in choices]
-        user_image_truths = [image.label for image in groundTruths]
-        users_list.append(user)
-        acc_list.append(accuracy(user_choices, user_image_truths))
+        ml_model = initialize_model(user)
+        if ml_model != None:
+            data = get_data()
+            images = ImageTable.objects.filter(is_trainSet=True)
+            imageid_test = [img.id for img in images]
+            test_labels = [x.label for x in images]#User Train Labels
+            test_images = [x.fileName for x in images]#User Test Images
+            test_set = data.loc[test_images, :]
+            pred,prob = ml_model.predict_test_image(test_set)
+            imgid_confid = zip(imageid_test,prob)
+            anlytics_data[user.username] = round(accuracy(test_labels,pred),3)
+        else:
+            anlytics_data[user.username] = 0.0
+    return anlytics_data
+        
+    # for user in users:
+    #     choices = Choice.objects.filter(user=user).order_by('image_id')
+    #     groundTruths = ImageTable.objects.filter(pk__in = [choice.image_id for choice in choices])
+    #     user_choices = [choice.userLabel for choice in choices]
+    #     user_image_truths = [image.label for image in groundTruths]
+    #     users_list.append(user)
+    #     acc_list.append(accuracy(user_choices, user_image_truths))
 
-    viz_encoded = user_acc_viz(users_list,acc_list)
-    return viz_encoded
+    # viz_encoded = user_acc_viz(users_list,acc_list)
+    # return viz_encoded
     
 @api_view(['GET'])
-def getAnalytics(request,pk):
-    viz_user_acc = 'data:%s;base64,%s' % ('image/jpeg', user_acc_analytics())
-    viz_misclass_image = 'data:%s;base64,%s' % ('image/jpeg', image_missclasfy_analytics())
-    data = {'userNacc':viz_user_acc,'imageMissUser':viz_misclass_image}
-    return JsonResponse(data, status=status.HTTP_200_OK)
+def get_user_acc_Analytics(request,pk):
+    # viz_user_acc = 'data:%s;base64,%s' % ('image/jpeg', user_acc_analytics())
+    # viz_misclass_image = 'data:%s;base64,%s' % ('image/jpeg', image_missclasfy_analytics())
+    #data = {'userNacc':user_acc_analytics(),'imageMissUser':image_missclasfy_analytics()}
+    return JsonResponse(user_acc_analytics(), status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def get_misclasfy_image_Analytics(request,pk):
+    # viz_user_acc = 'data:%s;base64,%s' % ('image/jpeg', user_acc_analytics())
+    # viz_misclass_image = 'data:%s;base64,%s' % ('image/jpeg', image_missclasfy_analytics())
+    #data = {'userNacc':user_acc_analytics(),'imageMissUser':image_missclasfy_analytics()}
+    return JsonResponse(image_missclasfy_analytics(), status=status.HTTP_200_OK)
     
 ######## USER BASED VIEW #########
 

@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
 import io
+import matplotlib
+matplotlib.use('Agg')
 def user_acc_viz(users,acc):
     np.random.seed(0)
     plt.rcdefaults()
@@ -47,19 +49,3 @@ def image_misclass_viz(img_names,num):
     buf.seek(0)
     img_msclas = base64.b64encode(buf.read()).decode('ascii')
     return img_msclas
-    # print("############### ",img_names,num)
-    # img_names = [x.split('.')[0] for x in img_names]
-    # num = np.array(num,dtype=int)
-    # num = num.tolist()
-    # fig = plt.figure()
-    # plt.rcdefaults()
-    # ax = fig.add_axes([0,0,1,1])
-    # ax.bar(img_names,num,align='edge')
-    # ax.set_xlabel('Image Name')
-    # ax.set_title('Top 5 Image Misclassified Based On Users')
-    # plt.savefig("ImageMiss.jpg")
-    # buf = io.BytesIO()
-    # plt.gcf().savefig(buf, format='png')
-    # buf.seek(0)
-    # img_msclas = base64.b64encode(buf.read()).decode('ascii')
-    # return img_msclas
