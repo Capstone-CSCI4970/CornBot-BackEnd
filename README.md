@@ -33,3 +33,8 @@ Requirements:
         2. New endpoint to return users accuracies for front-end leaderboard.
         3. Documentation added for views and models.
         4. Code cleanup: removed not needed functions, rename view methods.
+    ## 1.3.0 Milestone 4
+        1. Added new endpoint getUpload. It spots all blights using bounding box in a image, uploaded by user.
+        2. Added a analytics endpoint that shows user labeling accuracy.
+        3. Added second analytics endpoint that shows user testing accuracy.
+        4. Added thrid analytics endpoint that shows images that has been most frequently misclassified. 
