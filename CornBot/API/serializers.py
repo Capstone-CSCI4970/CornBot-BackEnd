@@ -22,6 +22,7 @@ class ImageSerializer(serializers.HyperlinkedModelSerializer):
             'fileName',
             'imageUrl',
             'label',
+            
         )
 class ChoiceSerializer(serializers.ModelSerializer):
 

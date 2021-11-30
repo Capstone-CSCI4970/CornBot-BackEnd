@@ -14,6 +14,7 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 
 from ML.ML_Class import ML_Model
 from ML.Viz import make_confusion_matrix
+from ML.analytics_viz import user_acc_viz,image_misclass_viz
 from sklearn.ensemble import RandomForestClassifier
 from ML.DataPreprocessing import DataPreprocessing
 from sklearn.metrics import confusion_matrix
@@ -23,6 +24,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import random
+import torch
+import cv2
+from PIL import Image
+from io import BytesIO
+import base64
+import matplotlib.pyplot as plt
+from torchvision import transforms
+import os
 
 #Result Reproducibility
 random.seed(7)
@@ -52,9 +61,8 @@ def get_images(request):
     get_x_images_random = random.sample(list(images), x)#Get 'X' random Images 
     image_to_train = [it.pk for it in get_x_images_random]
     images = ImageTable.objects.filter(id__in=image_to_train)
-    images.update(is_trainSet=False)# Is used for training
-    all_healthy_serializer = ImageSerializer(images, many=True)
-    return JsonResponse(all_healthy_serializer.data, safe=False)
+    images_for_user = ImageSerializer(images, many=True)
+    return JsonResponse(images_for_user.data, safe=False)
 
 
 
@@ -115,7 +123,7 @@ def accuracy(x,y):
         accuracy: int
             it returns the accurcy computed using x and y
     """
-    if not x or not y: # if either list is empty, we cannot calculate the accuracy.
+    if not np.array(x).any() or not np.array(y).any(): # if either list is empty, we cannot calculate the accuracy.
         return 0.00
     x,y = np.array(x),np.array(y)
     pred = (x == y).astype(np.int)
@@ -203,6 +211,66 @@ def getTestAcc(request,pk):
     data = {'user_id':pk,'Accuracy':accuracy_test,'image_confidence':list(imgid_confid),'confusion_matrix_uri':confusion_matrix_uri}
     return JsonResponse(data, safe=False)
 
+@api_view(['GET'])
+def getUpload(request,pk):
+    file = request.FILES["uploadedFile"]
+    #model = torch.hub.load('ML/yolov5', 'custom', path='ML/yolov5/runs/train/exp/weights/best.pt', source='local')
+    model = torch.hub.load('ultralytics/yolov5', 'custom', path='ML/best.pt')
+    input = Image.open(file)
+    transform = transforms.Compose([transforms.Resize(1056)])
+    input = transform(input)
+    results = model(input, size=1056)
+    results.imgs # array of original images (as np array) passed to model for inference
+    results.render()  # updates results.imgs with boxes and labels
+    buffered = BytesIO()
+    img_base64 = Image.fromarray(results.imgs[0])
+    img_base64.save(buffered, format="JPEG")
+    data = {"Pred_URI":base64.b64encode(buffered.getvalue()).decode('utf-8')}
+    return JsonResponse(data, safe=False)
+
+def image_missclasfy_analytics():
+    users = User.objects.all()
+    full_image_ids = np.zeros(len(ImageTable.objects.all())+1)
+    for user in users:
+        choices = Choice.objects.filter(user=user)
+        if(len(choices) > 0):
+            imageids = np.array([choice.image_id for choice in choices])
+            user_labels = [choice.userLabel for choice in choices]
+            images = ImageTable.objects.filter(pk__in=imageids)
+            ground_truth = [x.label for x in images]
+            mask = np.array(user_labels) != np.array(ground_truth)
+            unmatched_labels = imageids[mask]
+            full_image_ids[unmatched_labels] += 1
+    
+    id_misclas = np.argpartition(full_image_ids,-5)[-5:] # ids of 5 most misclassified image
+    ids_value = full_image_ids[id_misclas]
+    images_missclass = ImageTable.objects.filter(pk__in=id_misclas)
+    id_to_imagename = [x.fileName for x in images_missclass]
+    viz_encoded = image_misclass_viz(id_to_imagename,ids_value)
+    return viz_encoded
+
+def user_acc_analytics():
+    users = User.objects.all()
+    users_list = []
+    acc_list = []    
+    for user in users:
+        choices = Choice.objects.filter(user=user).order_by('image_id')
+        groundTruths = ImageTable.objects.filter(pk__in = [choice.image_id for choice in choices])
+        user_choices = [choice.userLabel for choice in choices]
+        user_image_truths = [image.label for image in groundTruths]
+        users_list.append(user)
+        acc_list.append(accuracy(user_choices, user_image_truths))
+
+    viz_encoded = user_acc_viz(users_list,acc_list)
+    return viz_encoded
+    
+@api_view(['GET'])
+def getAnalytics(request,pk):
+    viz_user_acc = 'data:%s;base64,%s' % ('image/jpeg', user_acc_analytics())
+    viz_misclass_image = 'data:%s;base64,%s' % ('image/jpeg', image_missclasfy_analytics())
+    data = {'userNacc':viz_user_acc,'imageMissUser':viz_misclass_image}
+    return JsonResponse(data, status=status.HTTP_200_OK)
+    
 ######## USER BASED VIEW #########
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -369,5 +437,49 @@ def users_accuracy_leaderboard(request):
         groundTruths = ImageTable.objects.filter(pk__in = [choice.image_id for choice in choices])
         user_choices = [choice.userLabel for choice in choices]
         user_image_truths = [image.label for image in groundTruths]
-        data[user.username] = accuracy(user_choices, user_image_truths)
+        
+        data[user.username] = accuracy(user_choices, user_image_truths) #if user_choices != None  else 0
     return JsonResponse(data, status=status.HTTP_200_OK)
+
+def get_filenames_urls_labels():
+    """
+        Returns a tuple of lists of filenames,urls and labels in order.
+        Returns
+        -------
+        returnValues : tuple
+            Lists.
+    """
+    path = 's3://cornimagesbucket/csvOut.csv'# Path to the S3 bucket
+    data = pd.read_csv(path, index_col = 0, header = None)#Read the csv
+    data_temp = data.reset_index()#Recover the original index
+    image_src = "cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/"
+    filenames = list(data_temp.iloc[:,0])#Get all the filename
+    labels = list(data.iloc[:,-1].map(dict(B=1, H=0)))#Get corrosponding Labels of the filename
+    file_urls = []
+    for filename in filenames:
+        file_urls.append(os.path.join(image_src,filename))#Src + filename is fileUrl
+    return zip(filenames,file_urls,labels)
+
+# Endpoint to populate image table with 20 or 200 images set for test
+# TODO Either lock down this endpoint or improve solution such that this is not needed.
+@api_view(['GET'])
+def image_populate(request):
+    images = list(get_filenames_urls_labels())
+    healthy_test_images = images[0:10]
+    unhealthy_test_images = images[-10:]
+    images_for_users = images[10:-10]
+    #insert healthy images for model testing
+    saveImage(healthy_test_images, False)
+    #insert unhealth images for model testing
+    saveImage(unhealthy_test_images, False)
+    #insert images for users to label
+    saveImage(images_for_users, True)
+    return JsonResponse({'message': 'Image Table populated'}, status=status.HTTP_200_OK)
+
+# save the given image list with the is_trainSet indicator
+def saveImage(image_list, is_trainSet):
+    for image in image_list:
+        new_entry = ImageTable( fileName=image[0], imageUrl=image[1], label =image[2], is_trainSet=is_trainSet)
+        new_entry.save()
+        
+

@@ -23,3 +23,10 @@ def get_filenames_urls_labels():
     for filename in filenames:
         file_urls.append(os.path.join(image_src,filename))#Src + filename is fileUrl
     return zip(filenames,file_urls,labels)
+
+    # Populate The Database
+# id = 1
+# for i in get_filenames_urls_labels():
+#     new_entry = ImageTable(id,*i,True)
+#     id += 1
+#     new_entry.save()
