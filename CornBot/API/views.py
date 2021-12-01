@@ -38,6 +38,8 @@ random.seed(7)
 
 # Create your views here.
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
 def get_images(request):
     """
         This function takes in a http GET request from the front-end to grab a random sample of 10 images 
@@ -131,6 +133,8 @@ def accuracy(x,y):
     return accuracy
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
 def get_acc(request,pk):
     """
         This function takes in a given request and user pk to get the
@@ -163,6 +167,8 @@ def get_acc(request,pk):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
 def getTestAcc(request,pk):
     """
         This function takes in a given request and user pk to get the users
@@ -195,12 +201,15 @@ def getTestAcc(request,pk):
     ml_model = ML_Model(train_set, RandomForestClassifier(), DataPreprocessing(True))
 
     images = ImageTable.objects.filter(is_trainSet=True)
-    imageid_test = [img.id for img in images]
+    imageid_test = [img.imageUrl for img in images]
     test_labels = [x.label for x in images]#User Train Labels
     test_images = [x.fileName for x in images]#User Test Images
     test_set = data.loc[test_images, :]
     pred,prob = ml_model.predict_test_image(test_set)
     imgid_confid = zip(imageid_test,prob)
+    model_image_confidence = []
+    for image,conf in zip(imageid_test,prob):
+        model_image_confidence.append(dict(imageUrl=image, confidence=conf))
 
     cf_matrix = confusion_matrix(test_labels,pred)
     labels = ['True Neg','False Pos','False Neg','True Pos']
@@ -208,10 +217,12 @@ def getTestAcc(request,pk):
     encoded_img = make_confusion_matrix(cf_matrix, group_names=labels, categories=categories, cmap='binary', title='Prediction CF Matrix',figsize=(12,12))
     confusion_matrix_uri = 'data:%s;base64,%s' % ('image/jpeg', encoded_img)
     accuracy_test = accuracy(test_labels,pred)
-    data = {'user_id':pk,'Accuracy':accuracy_test,'image_confidence':list(imgid_confid),'confusion_matrix_uri':confusion_matrix_uri}
+    data = {'user_id':pk,'Accuracy':accuracy_test,'image_confidence':model_image_confidence,'confusion_matrix_uri':confusion_matrix_uri}
     return JsonResponse(data, safe=False)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
 def getUpload(request,pk):
     file = request.FILES["uploadedFile"]
     #model = torch.hub.load('ML/yolov5', 'custom', path='ML/yolov5/runs/train/exp/weights/best.pt', source='local')
@@ -265,6 +276,8 @@ def user_acc_analytics():
     return viz_encoded
     
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
 def getAnalytics(request,pk):
     viz_user_acc = 'data:%s;base64,%s' % ('image/jpeg', user_acc_analytics())
     viz_misclass_image = 'data:%s;base64,%s' % ('image/jpeg', image_missclasfy_analytics())
@@ -281,6 +294,8 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
 def image_list(request):
     """
         TODO: filter these images to be only ones used on trainset = True
@@ -301,6 +316,8 @@ def image_list(request):
         return JsonResponse(image_serialized.data, safe=False)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
 def test_choices(request):
     choices = Choice.objects.all()
     if request.method == 'GET':
@@ -309,6 +326,8 @@ def test_choices(request):
 
 # TODO: filter the users specific choices by todays date.
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
 def get_user_specific_choices(request, pk):
     """
         This end-point takes a given request and user pk
@@ -333,6 +352,8 @@ def get_user_specific_choices(request, pk):
 
 # TODO: filter the users specific choices by todays date.
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
 def get_user_choices_by_imageId(request, pk):
     """
         This endpoint gets a users label on a specific image using
@@ -346,6 +367,8 @@ def get_user_choices_by_imageId(request, pk):
     return JsonResponse(data.data, safe=False)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
 def create_choice_record(request):
     """
         This end point creates choice record(s) that were made by
@@ -369,6 +392,8 @@ def create_choice_record(request):
         return JsonResponse(choices_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
 def update_user_choice(request, pk):
     """
         This end point updates a given choice record by the pk provided in the request.
@@ -427,6 +452,8 @@ def get_uid_by_username(request, user_name):
     return JsonResponse({'username': user_name, 'uid': uid})
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
 def users_accuracy_leaderboard(request):
     users = User.objects.all()
     data = {}
@@ -463,6 +490,8 @@ def get_filenames_urls_labels():
 # Endpoint to populate image table with 20 or 200 images set for test
 # TODO Either lock down this endpoint or improve solution such that this is not needed.
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
 def image_populate(request):
     images = list(get_filenames_urls_labels())
     healthy_test_images = images[0:10]
