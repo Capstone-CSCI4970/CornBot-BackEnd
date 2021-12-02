@@ -73,7 +73,7 @@ class Choice(models.Model):
     )
     userLabel = models.BooleanField()
     create_date = models.DateTimeField(auto_now_add=True)
-    user_training_record = models.BooleanField(null=False)
+    user_training_record = models.BooleanField(default=False,null=False)
 
     def __str__(self) -> str:
         return f'ChoiceId: {self.pk} \n User: {self.user}\n Image: {self.image.fileName}\n Label: {self.userLabel}\n user_training_record: {self.user_training_record}\n'
