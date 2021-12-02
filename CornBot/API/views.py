@@ -56,8 +56,6 @@ def get_images(request):
             a json response containing a random list of images that the front-end will use
             to display to the user for labeling to help train the ML model.
     """
-    #Reset
-    #ImageTable.objects.all().update(is_trainSet=True)
     images = ImageTable.objects.filter(is_trainSet=True)
     x = 10
     get_x_images_random = random.sample(list(images), x)#Get 'X' random Images 
@@ -188,19 +186,12 @@ def getTestAcc(request,pk):
             confidence for each images used for test accuracy. It also includes a 
             image that shows the confusion matrix and metrices score for the model. 
     """
+    
     user = User.objects.get(pk=pk)
     
-    choices = Choice.objects.filter(user=user)
-    imageid_choices = [choice.image_id for choice in choices]
-    train_labels = [choice.userLabel for choice in choices]#User Train Labels
-    images_train = ImageTable.objects.filter(pk__in=imageid_choices)
-    train_images = [x.fileName for x in images_train]#User Train Images
+    ml_model = initialize_model(user)
     data = get_data()
-    train_set = data.loc[train_images, :]
-    train_set['y_value'] = train_labels
-    ml_model = ML_Model(train_set, RandomForestClassifier(), DataPreprocessing(True))
-
-    images = ImageTable.objects.filter(is_trainSet=True)
+    images = ImageTable.objects.filter(is_trainSet=False)
     imageid_test = [img.imageUrl for img in images]
     test_labels = [x.label for x in images]#User Train Labels
     test_images = [x.fileName for x in images]#User Test Images
@@ -210,20 +201,19 @@ def getTestAcc(request,pk):
     model_image_confidence = []
     for image,conf in zip(imageid_test,prob):
         model_image_confidence.append(dict(imageUrl=image, confidence=conf))
-
     cf_matrix = confusion_matrix(test_labels,pred)
-    labels = ['True Neg','False Pos','False Neg','True Pos']
+    labels = ['True Pos','False Neg','False Neg','True Neg']
     categories = ['Healthy', 'Blight']
     encoded_img = make_confusion_matrix(cf_matrix, group_names=labels, categories=categories, cmap='binary', title='Prediction CF Matrix',figsize=(12,12))
     confusion_matrix_uri = 'data:%s;base64,%s' % ('image/jpeg', encoded_img)
     accuracy_test = accuracy(test_labels,pred)
-    data = {'user_id':pk,'Accuracy':accuracy_test,'image_confidence':model_image_confidence,'confusion_matrix_uri':confusion_matrix_uri}
+    data = {'user_id':pk,'Accuracy':accuracy_test,'image_confidence':list(model_image_confidence),'confusion_matrix_uri':confusion_matrix_uri}
     return JsonResponse(data, safe=False)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])
-def getUpload(request,pk):
+def getUpload(request):
     file = request.FILES["uploadedFile"]
     #model = torch.hub.load('ML/yolov5', 'custom', path='ML/yolov5/runs/train/exp/weights/best.pt', source='local')
     model = torch.hub.load('ultralytics/yolov5', 'custom', path='ML/best.pt')
@@ -239,8 +229,23 @@ def getUpload(request,pk):
     data = {"Pred_URI":base64.b64encode(buffered.getvalue()).decode('utf-8')}
     return JsonResponse(data, safe=False)
 
+def initialize_model(user):
+    choices = Choice.objects.filter(user=user)
+    if len(choices) == 0:
+        return None 
+    imageid_choices = [choice.image_id for choice in choices]
+    train_labels = [choice.userLabel for choice in choices]#User Train Labels
+    images_train = ImageTable.objects.filter(pk__in=imageid_choices)
+    train_images = [x.fileName for x in images_train]#User Train Images
+    data = get_data()
+    train_set = data.loc[train_images, :]
+    train_set['y_value'] = train_labels
+    ml_model = ML_Model(train_set, RandomForestClassifier(), DataPreprocessing(True))
+    return ml_model
+
 def image_missclasfy_analytics():
     users = User.objects.all()
+    anlytics_data = {}
     full_image_ids = np.zeros(len(ImageTable.objects.all())+1)
     for user in users:
         choices = Choice.objects.filter(user=user)
@@ -257,32 +262,43 @@ def image_missclasfy_analytics():
     ids_value = full_image_ids[id_misclas]
     images_missclass = ImageTable.objects.filter(pk__in=id_misclas)
     id_to_imagename = [x.fileName for x in images_missclass]
-    viz_encoded = image_misclass_viz(id_to_imagename,ids_value)
-    return viz_encoded
+    for idx,filename in enumerate(id_to_imagename):
+        anlytics_data[filename] = ids_value[idx]
+    return anlytics_data
+
 
 def user_acc_analytics():
     users = User.objects.all()
     users_list = []
-    acc_list = []    
+    acc_list = [] 
+    anlytics_data = {}
     for user in users:
-        choices = Choice.objects.filter(user=user).order_by('image_id')
-        groundTruths = ImageTable.objects.filter(pk__in = [choice.image_id for choice in choices])
-        user_choices = [choice.userLabel for choice in choices]
-        user_image_truths = [image.label for image in groundTruths]
-        users_list.append(user)
-        acc_list.append(accuracy(user_choices, user_image_truths))
-
-    viz_encoded = user_acc_viz(users_list,acc_list)
-    return viz_encoded
+        ml_model = initialize_model(user)
+        if ml_model != None:
+            data = get_data()
+            images = ImageTable.objects.filter(is_trainSet=True)
+            imageid_test = [img.id for img in images]
+            test_labels = [x.label for x in images]#User Train Labels
+            test_images = [x.fileName for x in images]#User Test Images
+            test_set = data.loc[test_images, :]
+            pred,prob = ml_model.predict_test_image(test_set)
+            imgid_confid = zip(imageid_test,prob)
+            anlytics_data[user.username] = round(accuracy(test_labels,pred),3)
+        else:
+            anlytics_data[user.username] = 0.0
+    return anlytics_data
     
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])
-def getAnalytics(request,pk):
-    viz_user_acc = 'data:%s;base64,%s' % ('image/jpeg', user_acc_analytics())
-    viz_misclass_image = 'data:%s;base64,%s' % ('image/jpeg', image_missclasfy_analytics())
-    data = {'userNacc':viz_user_acc,'imageMissUser':viz_misclass_image}
-    return JsonResponse(data, status=status.HTTP_200_OK)
+def get_user_acc_Analytics(request):
+    return JsonResponse(user_acc_analytics(), status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+def get_misclasfy_image_Analytics(request):
+    return JsonResponse(image_missclasfy_analytics(), status=status.HTTP_200_OK)
     
 ######## USER BASED VIEW #########
 
