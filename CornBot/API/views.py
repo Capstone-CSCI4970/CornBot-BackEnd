@@ -210,7 +210,7 @@ def getTestAcc(request,pk):
     data = {'user_id':pk,'Accuracy':accuracy_test,'image_confidence':list(model_image_confidence),'confusion_matrix_uri':confusion_matrix_uri}
     return JsonResponse(data, safe=False)
 
-@api_view(['GET'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])
 def getUpload(request):
