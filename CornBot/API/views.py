@@ -210,7 +210,7 @@ def getTestAcc(request,pk):
     data = {'user_id':pk,'Accuracy':accuracy_test,'image_confidence':list(model_image_confidence),'confusion_matrix_uri':confusion_matrix_uri}
     return JsonResponse(data, safe=False)
 
-@api_view(['GET'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])
 def getUpload(request):
@@ -238,6 +238,10 @@ def initialize_model(user):
     images_train = ImageTable.objects.filter(pk__in=imageid_choices)
     train_images = [x.fileName for x in images_train]#User Train Images
     data = get_data()
+    label_image = zip(train_images,train_labels)
+    label_image_unique = set(label_image)
+    unzip_label_image_unique = zip(*label_image_unique)
+    train_images,train_labels = unzip_label_image_unique
     train_set = data.loc[train_images, :]
     train_set['y_value'] = train_labels
     ml_model = ML_Model(train_set, RandomForestClassifier(), DataPreprocessing(True))
