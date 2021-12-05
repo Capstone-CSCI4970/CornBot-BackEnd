@@ -1,3 +1,5 @@
+from datetime import date, datetime
+from time import timezone
 from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.parsers import JSONParser
@@ -126,6 +128,8 @@ def accuracy(x,y):
     if not np.array(x).any() or not np.array(y).any(): # if either list is empty, we cannot calculate the accuracy.
         return 0.00
     x,y = np.array(x),np.array(y)
+    print(f'x: {len(x)}\n')
+    print(f'y: {(y)}\n')
     pred = (x == y).astype(np.int)
     accuracy = pred.mean()*100
     return accuracy
@@ -152,7 +156,7 @@ def get_acc(request,pk):
             for labelling for user 
     """
     user = User.objects.get(pk=pk)
-    choices = Choice.objects.filter(user=user)
+    choices = Choice.objects.filter(user=user, user_training_record = False).order_by('image_id')
     imageid_choices = [choice.image_id for choice in choices]
     train_labels = [choice.userLabel for choice in choices]#User Train Labels
     images = ImageTable.objects.filter(pk__in=imageid_choices)
@@ -186,10 +190,17 @@ def getTestAcc(request,pk):
             confidence for each images used for test accuracy. It also includes a 
             image that shows the confusion matrix and metrices score for the model. 
     """
-    
+
     user = User.objects.get(pk=pk)
+
+    item = request.GET.get('activity')
+    choices = None
+    if(item != None and item == '1'):
+        choices = Choice.objects.filter(user=user, user_training_record = True).order_by('image_id')
+    else:
+        choices = Choice.objects.filter(user=user, user_training_record = False).order_by('image_id')
     
-    ml_model = initialize_model(user)
+    ml_model = initialize_model(choices)
     data = get_data()
     images = ImageTable.objects.filter(is_trainSet=False)
     imageid_test = [img.imageUrl for img in images]
@@ -229,8 +240,7 @@ def getUpload(request):
     data = {"Pred_URI":base64.b64encode(buffered.getvalue()).decode('utf-8')}
     return JsonResponse(data, safe=False)
 
-def initialize_model(user):
-    choices = Choice.objects.filter(user=user)
+def initialize_model(choices):
     if len(choices) == 0:
         return None 
     imageid_choices = [choice.image_id for choice in choices]
@@ -252,7 +262,7 @@ def image_missclasfy_analytics():
     anlytics_data = {}
     full_image_ids = np.zeros(len(ImageTable.objects.all())+1)
     for user in users:
-        choices = Choice.objects.filter(user=user)
+        choices = Choice.objects.filter(user=user, user_training_record = False).order_by('image_id')
         if(len(choices) > 0):
             imageids = np.array([choice.image_id for choice in choices])
             user_labels = [choice.userLabel for choice in choices]
@@ -273,11 +283,11 @@ def image_missclasfy_analytics():
 
 def user_acc_analytics():
     users = User.objects.all()
-    users_list = []
-    acc_list = [] 
     anlytics_data = {}
+
     for user in users:
-        ml_model = initialize_model(user)
+        choices = Choice.objects.filter(user=user, user_training_record = False).order_by('image_id')
+        ml_model = initialize_model(choices)
         if ml_model != None:
             data = get_data()
             images = ImageTable.objects.filter(is_trainSet=True)
@@ -318,7 +328,6 @@ class UserViewSet(viewsets.ModelViewSet):
 @authentication_classes([TokenAuthentication])
 def image_list(request):
     """
-        TODO: filter these images to be only ones used on trainset = True
         This is a simple API end-point that will return a list of all
         images to be displayed by the front-end
         Parameters
@@ -330,7 +339,7 @@ def image_list(request):
         ----------
         A JsonResponse with a list of all images for the front-end to display.
     """
-    images = ImageTable.objects.all()
+    images = ImageTable.objects.filter(is_trainSet = True)
     if request.method == 'GET':
         image_serialized = ImageSerializer(images, many=True)
         return JsonResponse(image_serialized.data, safe=False)
@@ -366,7 +375,7 @@ def get_user_specific_choices(request, pk):
     """
 
     user = User.objects.get(pk=pk)
-    choices = Choice.objects.filter(user=user)
+    choices = Choice.objects.filter(user=user, user_training_record = False)
     serialized_data = ChoiceSerializer(choices, many=True)
     return JsonResponse(serialized_data.data, safe=False)
 
@@ -433,8 +442,6 @@ def update_user_choice(request, pk):
         current_choice = Choice.objects.get(pk=pk)
     except Choice.DoesNotExist:
         return JsonResponse({'message': 'That choice does not exist'}, status=status.HTTP_404_NOT_FOUND)
-    
-    print(f'this is the current choice grabbed: {current_choice}')
     choice_data = JSONParser().parse(request)
     choice_seralizer = ChoiceSerializer(current_choice, data=choice_data)
     if choice_seralizer.is_valid():
@@ -480,12 +487,19 @@ def users_accuracy_leaderboard(request):
 
     for user in users:
         data[user.username] = {}
-        choices = Choice.objects.filter(user=user).order_by('image_id')
-        groundTruths = ImageTable.objects.filter(pk__in = [choice.image_id for choice in choices])
-        user_choices = [choice.userLabel for choice in choices]
+        choices = Choice.objects.filter(user=user, user_training_record = False).order_by('image_id')
+        imageid_choices = [choice.image_id for choice in choices]
+        train_labels = [choice.userLabel for choice in choices]#User Train Labels
+        groundTruths = ImageTable.objects.filter(pk__in=imageid_choices)
+        my_dict = dict()
+        for choice in choices:
+            # TODO: need to make sure if the key exist then compare the two choices create date and get latest 1
+            my_dict[choice.image_id] = choice.userLabel       
+        u_labels = list()
+        for key in sorted(my_dict):
+                u_labels.append(my_dict[key])
         user_image_truths = [image.label for image in groundTruths]
-        
-        data[user.username] = accuracy(user_choices, user_image_truths) #if user_choices != None  else 0
+        data[user.username] = accuracy(u_labels, user_image_truths) #if user_choices != None  else 0
     return JsonResponse(data, status=status.HTTP_200_OK)
 
 def get_filenames_urls_labels():
