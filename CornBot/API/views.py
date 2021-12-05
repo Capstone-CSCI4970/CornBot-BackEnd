@@ -128,8 +128,6 @@ def accuracy(x,y):
     if not np.array(x).any() or not np.array(y).any(): # if either list is empty, we cannot calculate the accuracy.
         return 0.00
     x,y = np.array(x),np.array(y)
-    print(f'x: {len(x)}\n')
-    print(f'y: {(y)}\n')
     pred = (x == y).astype(np.int)
     accuracy = pred.mean()*100
     return accuracy
@@ -275,9 +273,9 @@ def image_missclasfy_analytics():
     id_misclas = np.argpartition(full_image_ids,-5)[-5:] # ids of 5 most misclassified image
     ids_value = full_image_ids[id_misclas]
     images_missclass = ImageTable.objects.filter(pk__in=id_misclas)
-    id_to_imagename = [x.fileName for x in images_missclass]
-    for idx,filename in enumerate(id_to_imagename):
-        anlytics_data[filename] = ids_value[idx]
+    id_to_imagename = [x.imageUrl for x in images_missclass]
+    for idx,imageUrl in enumerate(id_to_imagename):
+        anlytics_data[imageUrl] = ids_value[idx]
     return anlytics_data
 
 
@@ -490,11 +488,11 @@ def users_accuracy_leaderboard(request):
         choices = Choice.objects.filter(user=user, user_training_record = False).order_by('image_id')
         imageid_choices = [choice.image_id for choice in choices]
         train_labels = [choice.userLabel for choice in choices]#User Train Labels
-        groundTruths = ImageTable.objects.filter(pk__in=imageid_choices)
+        groundTruths = ImageTable.objects.filter(pk__in=imageid_choices).order_by('id')
+        choices = sorted(choices, key= lambda item: (item.image.id, item.create_date)) # ordering to ensure we get the most recent labeling incase same image labeld twice
         my_dict = dict()
         for choice in choices:
-            # TODO: need to make sure if the key exist then compare the two choices create date and get latest 1
-            my_dict[choice.image_id] = choice.userLabel       
+            my_dict[choice.image_id] = choice.userLabel
         u_labels = list()
         for key in sorted(my_dict):
                 u_labels.append(my_dict[key])
@@ -537,7 +535,8 @@ def image_populate(request):
     saveImage(unhealthy_test_images, False)
     #insert images for users to label
     saveImage(images_for_users, True)
-    return JsonResponse({'message': 'Image Table populated'}, status=status.HTTP_200_OK)
+    totalImages = ImageTable.objects.all().count()
+    return JsonResponse({'message': 'Image Table populated', 'Total images': totalImages}, status=status.HTTP_200_OK)
 
 # save the given image list with the is_trainSet indicator
 def saveImage(image_list, is_trainSet):
@@ -545,4 +544,3 @@ def saveImage(image_list, is_trainSet):
         new_entry = ImageTable( fileName=image[0], imageUrl=image[1], label =image[2], is_trainSet=is_trainSet)
         new_entry.save()
         
-
