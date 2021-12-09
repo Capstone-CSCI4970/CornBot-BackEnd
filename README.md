@@ -15,7 +15,7 @@ Requirements:
   5. Run the server
    `python manage.py runserver 8000`
   6. Populate the ImageTable 
-       1.Check: In API.views.py in image_populate method remove the permisson classes and authorization classes function decorators if they exist.
+       1. Check: In API.views.py in image_populate method remove the permisson classes and authorization classes function decorators if they exist.
        2. After removing the permisson and authorization classes decorator(if they exists) Call the /image/populate endpoint to intialize the Image table.
        3. Check to make sure the image table is populated by checking the /admin page on localhost and log in as your superuser created in step 4.
   8. You are all up and running!
