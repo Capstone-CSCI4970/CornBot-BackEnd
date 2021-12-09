@@ -15,9 +15,9 @@ Requirements:
   5. Run the server
    `python manage.py runserver 8000`
   6. Populate the ImageTable 
-       1. Suggested to use Postman for this. OR in API.views.py in image_populate method remove the permisson classes and authorization classes function decorators.
-       2. In Postman, call the /api/auth/ endpoint on your localhost with a POST request along with your usename and password to get your API token.
-       3. In Postman, add the API token to the authorization header with the value 'token {yourTokenHere}, and then with the authorization made make the GET request to /api/image/populate endpoint and should get a response saying images have been populated and with the number of image records created.
+       1.Check: In API.views.py in image_populate method remove the permisson classes and authorization classes function decorators if they exist.
+       2. After removing the permisson and authorization classes decorator(if they exists) Call the /image/populate endpoint to intialize the Image table.
+       3. Check to make sure the image table is populated by checking the /admin page on localhost and log in as your superuser created in step 4.
   8. You are all up and running!
   
 
