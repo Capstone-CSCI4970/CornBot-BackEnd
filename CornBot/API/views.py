@@ -522,8 +522,6 @@ def get_filenames_urls_labels():
 # Endpoint to populate image table with 20 or 200 images set for test
 # TODO Either lock down this endpoint or improve solution such that this is not needed.
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
-@authentication_classes([TokenAuthentication])
 def image_populate(request):
     images = list(get_filenames_urls_labels())
     healthy_test_images = images[0:10]
