@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Viz module &#8212; CornBot 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="SamplingMethods module" href="SamplingMethods.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-Viz">
+<span id="viz-module"></span><h1>Viz module<a class="headerlink" href="#module-Viz" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="Viz.make_confusion_matrix">
+<span class="sig-prename descclassname"><span class="pre">Viz.</span></span><span class="sig-name descname"><span class="pre">make_confusion_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">categories</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cbar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xyticks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xyplotlabels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sum_stats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Blues'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Viz.make_confusion_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function will make a pretty plot of an sklearn Confusion Matrix cm using a Seaborn heatmap visualization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cf</strong> (<em>nd-array</em>) – confusion matrix to be passed in</p></li>
+<li><p><strong>group_names</strong> (<em>list</em>) – List of strings that represent the labels row by row to be shown in each square.</p></li>
+<li><p><strong>categories</strong> (<em>list</em>) – List of strings containing the categories to be displayed on the x,y axis. Default is ‘auto’</p></li>
+<li><p><strong>count</strong> (<em>boolean</em>) – If True, show the raw number in the confusion matrix. Default is True.</p></li>
+<li><p><strong>normalize</strong> (<em>boolean</em>) – If True, show the proportions for each category. Default is True.</p></li>
+<li><p><strong>cbar</strong> (<em>boolean</em>) – If True, show the color bar. The cbar values are based off the values in the confusion matrix.
+Default is True.</p></li>
+<li><p><strong>xyticks</strong> (<em>boolean</em>) – If True, show x and y ticks. Default is True.</p></li>
+<li><p><strong>xyplotlabels</strong> (<em>boolean</em>) – If True, show ‘True Label’ and ‘Predicted Label’ on the figure. Default is True.</p></li>
+<li><p><strong>sum_stats</strong> (<em>boolean</em>) – If True, display summary statistics below the figure. Default is True.</p></li>
+<li><p><strong>figsize</strong> (<em>tuple</em>) – Tuple representing the figure size. Default will be the matplotlib rcParams value.</p></li>
+<li><p><strong>cmap</strong> (<em>String</em>) – <dl class="simple">
+<dt>Colormap of the values displayed from matplotlib.pyplot.cm. Default is ‘Blues’</dt><dd><p>See <a class="reference external" href="http://matplotlib.org/examples/color/colormaps_reference.html">http://matplotlib.org/examples/color/colormaps_reference.html</a></p>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>title</strong> (<em>String</em>) – Title for the heatmap. Default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>confusion_matrix</strong> – image uri of confusion matrix also with metrices with score</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Image URI</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">CornBot</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="modules/views.html">API Views</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/models.html">API models</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ML</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="DataPreprocessing.html">DataPreprocessing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ML_Class.html">ML_Class module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SamplingMethods.html">SamplingMethods module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Viz module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">ML</a><ul>
+      <li>Previous: <a href="SamplingMethods.html" title="previous chapter">SamplingMethods module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Bibek.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/Viz.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

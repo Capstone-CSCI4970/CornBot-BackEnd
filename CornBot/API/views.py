@@ -223,6 +223,18 @@ def getTestAcc(request,pk):
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])
 def getUpload(request):
+    """
+        Endpoint uses yolov5 trained model to make inference in images
+
+        Paramenters:
+        ----------
+        request: HttpRequest
+            The HttpRequest object received from the front-end.
+            
+        Returns:
+            URI of image returned by the object detection model
+        ----------
+    """
     file = request.FILES["uploadedFile"]
     #model = torch.hub.load('ML/yolov5', 'custom', path='ML/yolov5/runs/train/exp/weights/best.pt', source='local')
     model = torch.hub.load('ultralytics/yolov5', 'custom', path='ML/best.pt')
@@ -239,6 +251,18 @@ def getUpload(request):
     return JsonResponse(data, safe=False)
 
 def initialize_model(choices):
+    """
+        Train the machine learning model based on the choices. 
+
+        Paramenters:
+        ----------
+        choices: List
+            choice reacord
+            
+        Returns:
+            trained model
+        ----------
+    """
     if len(choices) == 0:
         return None 
     imageid_choices = [choice.image_id for choice in choices]
@@ -256,6 +280,14 @@ def initialize_model(choices):
     return ml_model
 
 def image_missclasfy_analytics():
+    """
+        Helper function to compute top five images that has been most frequently misclassified.
+
+            
+        Returns:
+            List of top five misclassified images along number of times misclassified
+        ----------
+    """
     users = User.objects.all()
     anlytics_data = {}
     full_image_ids = np.zeros(len(ImageTable.objects.all())+1)
@@ -280,6 +312,13 @@ def image_missclasfy_analytics():
 
 
 def user_acc_analytics():
+    """
+        Helper function to compute user and their accuracy.
+            
+        Returns:
+            List that includes all users and their repective accuracy
+        ----------
+    """
     users = User.objects.all()
     anlytics_data = {}
 
@@ -299,17 +338,41 @@ def user_acc_analytics():
         else:
             anlytics_data[user.username] = 0.0
     return anlytics_data
-    
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])
 def get_user_acc_Analytics(request):
+    """
+        This end point shows test accuracy of user.
+
+        Paramenters:
+        ----------
+        request: HttpRequest
+            The HttpRequest mde by the front-end to this given end point
+            
+        Returns:
+            JsonResponse that list of users and their test accuracy
+        ----------
+    """
     return JsonResponse(user_acc_analytics(), status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])
 def get_misclasfy_image_Analytics(request):
+    """
+        This end point shows top five images that has been most frequently misclassified.
+
+        Paramenters:
+        ----------
+        request: HttpRequest
+            The HttpRequest mde by the front-end to this given end point
+            
+        Returns:
+            JsonResponse list of top five misclassified images along number of times misclassified
+        ----------
+    """
     return JsonResponse(image_missclasfy_analytics(), status=status.HTTP_200_OK)
     
 ######## USER BASED VIEW #########
@@ -480,6 +543,18 @@ def get_uid_by_username(request, user_name):
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])
 def users_accuracy_leaderboard(request):
+    """
+        This end point shows leaderboard based on user's accuracy.
+
+        Paramenters:
+        ----------
+        request: HttpRequest
+            The HttpRequest mde by the front-end to this given end point
+            
+        Returns:
+            JsonResponse that includes all users and their repective accuracy
+        ----------
+    """
     users = User.objects.all()
     data = {}
 
@@ -502,11 +577,12 @@ def users_accuracy_leaderboard(request):
 
 def get_filenames_urls_labels():
     """
-        Returns a tuple of lists of filenames,urls and labels in order.
-        Returns
-        -------
-        returnValues : tuple
-            Lists.
+        Gets filename of each images, along with urls and its ground truth label from
+        csv file stored in aws S3
+
+        Returns:
+            JsonResponse zipped filenames, file urls, and labels 
+        ----------
     """
     path = 's3://cornimagesbucket/csvOut.csv'# Path to the S3 bucket
     data = pd.read_csv(path, index_col = 0, header = None)#Read the csv
@@ -518,11 +594,23 @@ def get_filenames_urls_labels():
     for filename in filenames:
         file_urls.append(os.path.join(image_src,filename))#Src + filename is fileUrl
     return zip(filenames,file_urls,labels)
-
 # Endpoint to populate image table with 20 or 200 images set for test
 # TODO Either lock down this endpoint or improve solution such that this is not needed.
 @api_view(['GET'])
 def image_populate(request):
+    """
+        This end point fills up the ImageTable table. It sets 80% data as train set and 
+        reserves rest of 20% for test set.
+
+        Paramenters:
+        ----------
+        request: HttpRequest
+            The HttpRequest mde by the front-end to this given end point
+
+        Returns:
+            JsonResponse indicating sucessfull population along with total images populated
+        ----------
+    """
     images = list(get_filenames_urls_labels())
     healthy_test_images = images[0:10]
     unhealthy_test_images = images[-10:]
@@ -538,6 +626,19 @@ def image_populate(request):
 
 # save the given image list with the is_trainSet indicator
 def saveImage(image_list, is_trainSet):
+    """
+        This end point is helper function for populate image that saves each image to
+        the tables
+
+        Paramenters:
+        ----------
+        image_list: List
+            List of images
+        
+        is_trainSet: boolean
+            True if the image is being used for training
+        ----------
+    """
     for image in image_list:
         new_entry = ImageTable( fileName=image[0], imageUrl=image[1], label =image[2], is_trainSet=is_trainSet)
         new_entry.save()
