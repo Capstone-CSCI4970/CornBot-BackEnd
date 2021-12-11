@@ -37,7 +37,7 @@
 <span id="api-models"></span><h1>API models<a class="headerlink" href="#module-API.models" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="API.models.Choice">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">API.models.</span></span><span class="sig-name descname"><span class="pre">Choice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.models.Choice" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">API.models.</span></span><span class="sig-name descname"><span class="pre">Choice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.models.Choice" title="Permalink to this definition">¶</a></dt>
 <dd><p>The choices table is a historical record of a users labeling of images in a given session.
 This is taking a given snapshot of the labels of a set of images that are given to the ML model
 to be trained on.</p>
@@ -52,15 +52,18 @@ True = healthy, False = unhealthy.</p>
 <dt>create_date: DateTime</dt><dd><p>The date a given choice record was created.
 Automatically given as the current date and time the record was created.</p>
 </dd>
+<dt>user_training_record: boolean</dt><dd><p>The label to identify a given record as being created during a user training activity.
+Indication that the record is a not intended for production.</p>
+</dd>
 </dl>
 <dl class="py exception">
 <dt class="sig sig-object py" id="API.models.Choice.DoesNotExist">
-<em class="property"><span class="pre">exception</span> </em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#API.models.Choice.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#API.models.Choice.DoesNotExist" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="API.models.Choice.MultipleObjectsReturned">
-<em class="property"><span class="pre">exception</span> </em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#API.models.Choice.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#API.models.Choice.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -72,12 +75,12 @@ object the first time, the query is executed.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="API.models.Choice.get_next_by_create_date">
-<span class="sig-name descname"><span class="pre">get_next_by_create_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">*</span></em>, <em class="sig-param"><span class="pre">field=&lt;django.db.models.fields.DateTimeField:</span> <span class="pre">create_date&gt;</span></em>, <em class="sig-param"><span class="pre">is_next=True</span></em>, <em class="sig-param"><span class="pre">**kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.models.Choice.get_next_by_create_date" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_next_by_create_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field=&lt;django.db.models.fields.DateTimeField:</span> <span class="pre">create_date&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_next=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.models.Choice.get_next_by_create_date" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="API.models.Choice.get_previous_by_create_date">
-<span class="sig-name descname"><span class="pre">get_previous_by_create_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">*</span></em>, <em class="sig-param"><span class="pre">field=&lt;django.db.models.fields.DateTimeField:</span> <span class="pre">create_date&gt;</span></em>, <em class="sig-param"><span class="pre">is_next=False</span></em>, <em class="sig-param"><span class="pre">**kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.models.Choice.get_previous_by_create_date" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_previous_by_create_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field=&lt;django.db.models.fields.DateTimeField:</span> <span class="pre">create_date&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_next=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.models.Choice.get_previous_by_create_date" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -107,7 +110,7 @@ one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="API.models.Choice.objects">
-<span class="sig-name descname"><span class="pre">objects</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;django.db.models.manager.Manager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#API.models.Choice.objects" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">objects</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;django.db.models.manager.Manager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#API.models.Choice.objects" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -135,11 +138,18 @@ object the first time, the query is executed.</p>
 <span class="sig-name descname"><span class="pre">user_id</span></span><a class="headerlink" href="#API.models.Choice.user_id" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="API.models.Choice.user_training_record">
+<span class="sig-name descname"><span class="pre">user_training_record</span></span><a class="headerlink" href="#API.models.Choice.user_training_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="API.models.ImageTable">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">API.models.</span></span><span class="sig-name descname"><span class="pre">ImageTable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.models.ImageTable" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">API.models.</span></span><span class="sig-name descname"><span class="pre">ImageTable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.models.ImageTable" title="Permalink to this definition">¶</a></dt>
 <dd><p>The ImageTable model represents the database table that stores records about images used
 for labeling by the users.</p>
 <dl class="simple">
@@ -162,12 +172,12 @@ Refer to Choices table for more information.</p>
 </dl>
 <dl class="py exception">
 <dt class="sig sig-object py" id="API.models.ImageTable.DoesNotExist">
-<em class="property"><span class="pre">exception</span> </em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#API.models.ImageTable.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#API.models.ImageTable.DoesNotExist" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="API.models.ImageTable.MultipleObjectsReturned">
-<em class="property"><span class="pre">exception</span> </em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#API.models.ImageTable.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#API.models.ImageTable.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -222,7 +232,7 @@ object the first time, the query is executed.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="API.models.ImageTable.objects">
-<span class="sig-name descname"><span class="pre">objects</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;django.db.models.manager.Manager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#API.models.ImageTable.objects" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">objects</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;django.db.models.manager.Manager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#API.models.ImageTable.objects" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -304,7 +314,7 @@ class built by <code class="docutils literal notranslate"><span class="pre">crea
       &copy;2021, Bibek.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

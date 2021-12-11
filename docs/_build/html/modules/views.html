@@ -37,11 +37,11 @@
 <span id="api-views"></span><h1>API Views<a class="headerlink" href="#module-API.views" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="API.views.UserViewSet">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">UserViewSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.UserViewSet" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">UserViewSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.UserViewSet" title="Permalink to this definition">¶</a></dt>
 <dd><p>API endpoint that allows users to be viewed or edited.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="API.views.UserViewSet.queryset">
-<span class="sig-name descname"><span class="pre">queryset</span></span><a class="headerlink" href="#API.views.UserViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">queryset</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;QuerySet</span> <span class="pre">[&lt;User:</span> <span class="pre">bkarki&gt;,</span> <span class="pre">&lt;User:</span> <span class="pre">Sam&gt;,</span> <span class="pre">&lt;User:</span> <span class="pre">testPostmanhere&gt;,</span> <span class="pre">&lt;User:</span> <span class="pre">testPostman&gt;,</span> <span class="pre">&lt;User:</span> <span class="pre">testUser1&gt;,</span> <span class="pre">&lt;User:</span> <span class="pre">cody&gt;]&gt;</span></em><a class="headerlink" href="#API.views.UserViewSet.queryset" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -109,6 +109,11 @@ image that shows the confusion matrix and metrices score for the model.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="API.views.getUpload">
+<span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">getUpload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.getUpload" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="API.views.get_acc">
 <span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">get_acc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.get_acc" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function takes in a given request and user pk to get the
@@ -144,6 +149,14 @@ image names and its featutes.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="API.views.get_filenames_urls_labels">
+<span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">get_filenames_urls_labels</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#API.views.get_filenames_urls_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a tuple of lists of filenames,urls and labels in order.
+:returns: <strong>returnValues</strong> – Lists.
+:rtype: tuple</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="API.views.get_images">
 <span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">get_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.get_images" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function takes in a http GET request from the front-end to grab a random sample of 10 images
@@ -164,6 +177,11 @@ to display to the user for labeling to help train the ML model.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="API.views.get_misclasfy_image_Analytics">
+<span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">get_misclasfy_image_Analytics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.get_misclasfy_image_Analytics" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="API.views.get_uid_by_username">
 <span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">get_uid_by_username</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.get_uid_by_username" title="Permalink to this definition">¶</a></dt>
 <dd><p>This end point takes a given user_name and finds the correlating user identifer
@@ -178,6 +196,11 @@ the correlating unique identifier number otherwise know as the primary key.</p>
 </dl>
 <p>JsonResponse with the correlating user_name and the unique identifier for that user.</p>
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="API.views.get_user_acc_Analytics">
+<span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">get_user_acc_Analytics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.get_user_acc_Analytics" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="API.views.get_user_choices_by_imageId">
@@ -204,8 +227,7 @@ to get the users choices on images that were labeled during the current session.
 <dl class="py function">
 <dt class="sig sig-object py" id="API.views.image_list">
 <span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">image_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.image_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>TODO: filter these images to be only ones used on trainset = True
-This is a simple API end-point that will return a list of all
+<dd><p>This is a simple API end-point that will return a list of all
 images to be displayed by the front-end
 :param request: The HttpRequest object recieved in the GET request
 :type request: HttpRequest</p>
@@ -218,6 +240,21 @@ images to be displayed by the front-end
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="API.views.image_missclasfy_analytics">
+<span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">image_missclasfy_analytics</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#API.views.image_missclasfy_analytics" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="API.views.image_populate">
+<span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">image_populate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.image_populate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="API.views.initialize_model">
+<span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">initialize_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">choices</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.initialize_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="API.views.retrive_prediction">
@@ -241,6 +278,11 @@ of labels for train images</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="API.views.saveImage">
+<span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">saveImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_trainSet</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.saveImage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="API.views.test_choices">
 <span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">test_choices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.test_choices" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -261,6 +303,16 @@ of labels for train images</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="API.views.user_acc_analytics">
+<span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">user_acc_analytics</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#API.views.user_acc_analytics" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="API.views.users_accuracy_leaderboard">
+<span class="sig-prename descclassname"><span class="pre">API.views.</span></span><span class="sig-name descname"><span class="pre">users_accuracy_leaderboard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API.views.users_accuracy_leaderboard" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </section>
 
@@ -323,7 +375,7 @@ of labels for train images</p>
       &copy;2021, Bibek.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
